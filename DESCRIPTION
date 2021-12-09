@@ -11,3 +11,5 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/wjschne/psycheval
 BugReports: https://github.com/wjschne/psycheval/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2

@@ -6,48 +6,46 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of psycheval is to …
+The psycheval package is a set of functions that can be useful in
+psychological evaluations. It accompanies the [*Individual
+Psychometrics*](https://individual-psychometrics.rbind.io/) online
+textbook.
 
 ## Installation
 
 You can install the development version of psycheval like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+remotes::install_github("wjschne/psycheval")
 ```
 
-## Example
+# Functions
 
-This is a basic example which shows you how to solve a common problem:
+## Convert a variable to standard scores
+
+Suppose you have a scaled score of 12 (*μ* = 10, *σ* = 3) that you want
+to convert to a standard score (*μ* = 100, *σ* = 15).
 
 ``` r
 library(psycheval)
-## basic example code
+x2standard(12, mu_x = 10, sigma_x = 3)
+#> [1] 110
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+To convert to a z-score (*μ* = 0, *σ* = 1):
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+x2standard(12,
+           mu_x = 10, sigma_x = 3,
+           mu_new = 0, sigma_new = 1)
+#> [1] 0.67
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
+To convert to T-score (*μ* = 50, *σ* = 10):
 
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+``` r
+x2standard(12,
+           mu_x = 10, sigma_x = 3,
+           mu_new = 50, sigma_new = 10)
+#> [1] 57
+```
