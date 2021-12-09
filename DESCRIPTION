@@ -1,12 +1,16 @@
 Package: psycheval
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A psychological evaluation toolkit
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: 
+    person(given = "W. Joel",
+           family = "Schneider",
+           role = c("aut", "cre"),
+           email = "w.joel.schneider@gmail.com",
+           comment = c(ORCID = "0000-0002-8393-5316"))
+Description: Functions useful in psychological evaluations
+    This package accompanies [*Individual Psychometrics*](https://individual-psychometrics.rbind.io/) online textbook.
+License: CC0
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/wjschne/psycheval
