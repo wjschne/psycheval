@@ -1,0 +1,7 @@
+url: ~
+template:
+  bootstrap: 5
+  theme: arrow-light
+  bslib:
+    bg: "#e4e9f7"
+    fg: "#2b3040"
