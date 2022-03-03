@@ -10,7 +10,13 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/composite_covariance.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/multivariate_ci.html</loc>
   </url>
   <url>
     <loc>/reference/x2standard.html</loc>

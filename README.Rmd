@@ -6,12 +6,14 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  dev = "ragg_png",
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
 library(psycheval)
+options(digits = 4)
 ```
 
 # psycheval
@@ -56,3 +58,129 @@ x2standard(12,
            mu_x = 10, sigma_x = 3,
            mu_new = 50, sigma_new = 10)
 ```
+
+## Covariance of weighted sums
+
+Let's create a covariance matrix of 5 variables that all correlate at .60.
+
+```{r}
+# Create covariance matrix
+Sigma <- matrix(0.6, nrow = 5, ncol = 5)
+diag(Sigma) <- 1
+Sigma
+
+
+
+
+```
+
+Suppose we want to create a sum of the first 2 variables and a sum of the remaining three variables. What would the covariance matrix of the summary variables be?
+
+First we create a weight matrix `w` with 5 rows and 2 columns consisting entirely of zeros. The first column represents the weight for the first variable. We put ones in the first two rows of the first column and ones in rows 3--5 in the second column. 
+
+```{r}
+# Create weight matrix
+w <- matrix(0, nrow = 5, ncol = 2)
+w[1:2,1] <- 1
+w[3:5,2] <- 1
+w
+```
+
+The covariance matrix of the sums is:
+
+```{r}
+# covariance matrix of weighted sums
+composite_covariance(Sigma, w)
+```
+
+To include the original variables in the covariance matrix, append an identity matrix to `w`:
+
+```{r}
+# A 5 by 5 idendity matrix
+I <- diag(5)
+I
+
+# Prepend the identity matrix to the w matrix
+w_expanded <- cbind(diag(5), w)
+w_expanded
+
+# Covariance matrix of original variables and the summary variables
+BigSigma <- composite_covariance(Sigma, w_expanded)
+BigSigma
+
+# Convert to correlations with the cov2cor function
+composite_covariance(Sigma, w_expanded, correlation = T)
+```
+
+
+## Compute a multivariate confidence interval conditioned on a set of observed scores
+
+
+```{r}
+library(readr)
+library(ggplot2)
+library(dplyr)
+
+# Observed scores
+x_wisc <- c(
+  vci = 130,
+  vsi = 120,
+  fri = 123,
+  wmi = 116,
+  psi = 97)
+
+# Reliability coefficients
+rxx_wisc <- c(
+  vci = .92,
+  vsi = .92,
+  fri = .93,
+  wmi = .92,
+  psi = .88)
+
+# Correlation matrix
+R_wisc <- ("
+  index	vci 	vsi 	fri 	wmi 	psi
+  vci  	1.00	0.59	0.59	0.53	0.30
+  vsi  	0.59	1.00	0.62	0.50	0.36
+  fri  	0.59	0.62	1.00	0.53	0.31
+  wmi  	0.53	0.50	0.53	1.00	0.36
+  psi  	0.30	0.36	0.31	0.36	1.00") |> 
+  read_tsv(col_types = cols(
+    .default = col_double(),
+    index = col_character())) |> 
+  tibble::column_to_rownames("index") |>
+  as.matrix()
+R_wisc
+
+d_ci <- multivariate_ci(
+  x = x_wisc,
+  rxx = rxx_wisc,
+  mu = rep(100, 5),
+  sigma = R_wisc * 225)
+
+d_ci 
+
+```
+
+```{r, echo = FALSE, fig.height=7}
+
+d_ci |> 
+  tidyr::pivot_longer(-score:-rxx) |> 
+  tidyr::separate(name, c("statistic", "type")) |> 
+  tidyr::pivot_wider(names_from = statistic, values_from = value) |> 
+  mutate(score = toupper(score) |> forcats::fct_inorder(),
+         type = stringr::str_to_title(type) |> factor(levels = c("Univariate", "Multivariate"))) |> 
+  ggplot(aes(score, mu, color = type)) +
+  geom_point(aes(y = x), color = "gray20", size = 2.5) +
+  geom_text(aes(y = x, label = x), color = "gray30", vjust = -1) +
+  geom_pointrange(aes(ymin = lower, ymax = upper), position = position_dodge(0.8)) +
+  geom_vline(xintercept = 0:5 + .5, size = 0.25, color = "gray70") +
+  labs(x = NULL, color = "95%\nConfidence\nInterval") +
+  theme_minimal(base_size = 16) + 
+  theme(panel.grid.major.x = element_blank()) + 
+  scale_y_continuous("Standard Scores", 
+                     breaks = seq(40, 160, 15), 
+                     minor_breaks = seq(40, 160, 5), 
+                     limits = c(40, 160))
+```
+

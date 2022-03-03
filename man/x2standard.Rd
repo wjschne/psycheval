@@ -10,8 +10,7 @@ x2standard(
   sigma_x = stats::sd(x, na.rm = T),
   mu_new = 100,
   sigma_new = 15,
-  digits = 0,
-  ...
+  digits = ifelse(sigma_new == 1, 2, 0)
 )
 }
 \arguments{
