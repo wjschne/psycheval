@@ -20,12 +20,26 @@ multivariate_ci(x, rxx, mu, sigma, ci = 0.95, v_names = names(x))
 \item{v_names}{a vector of names}
 }
 \value{
-data.frame
+A data frame with the following columns:
+\itemize{
+\item \code{variable} - Variable names
+\item \code{x} - Variable scores
+\item \code{rxx} - Reliability coefficients
+\item \code{mu_univariate} - Expected true score estimated from the corresponding observed score
+\item \code{see_univariate} - Standard error of the estimate computed from the corresponding reliability coefficient
+\item \code{mu_multivariate} - Expected true score estimated from all observed scores
+\item \code{see_multivariate} - Standard error of the estimate computed from the corresponding reliability coefficient
+\item \code{upper_univariate} - upper bound of univariate confidence interval
+\item \code{lower_univariate} - lower bound of univariate confidence interval
+\item \code{upper_multivariate} - upper bound of multivariate confidence interval
+\item \code{lower_multivariate} - lower bound of multivariate confidence interval
+}
 }
 \description{
 General a multivariate confidence interval for a set of scores
 }
 \examples{
+# Observed Scores
 x_wisc <- c(
   vci = 130,
   vsi = 130,
@@ -33,6 +47,8 @@ x_wisc <- c(
   wmi = 130,
   psi = 130
 )
+
+# Reliability Coefficients
 rxx_wisc <- c(
   vci = .92,
   vsi = .92,
@@ -40,6 +56,8 @@ rxx_wisc <- c(
   wmi = .92,
   psi = .88
   )
+
+# Correlation matrix
 R_wisc <- ("
   index	vci 	vsi 	fri 	wmi 	psi
   vci  	1.00	0.59	0.59	0.53	0.30
@@ -50,10 +68,23 @@ R_wisc <- ("
     readr::read_tsv() |>
     tibble::column_to_rownames("index") |>
     as.matrix()
- multivariate_ci(
+
+ # Covariance matrix
+ Sigma_wisc <- R_wisc * 15 ^ 2
+
+ # Population means#'
+ mu_wisc <- rep(100, 5)
+
+ mci_wisc <- multivariate_ci(
    x = x_wisc,
    rxx = rxx_wisc,
-   mu = rep(100, 5),
-   sigma = R_wisc * 225
+   mu = mu_wisc,
+   sigma = Sigma_wisc
  )
+
+ mci_wisc
+
+ # Conditional covariance of true score estimates
+ attr(mci_wisc, "conditional_covariance")
+
 }

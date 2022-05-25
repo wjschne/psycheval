@@ -28,13 +28,18 @@ x2standard <- function(x,
 #' @param w Weight matrix. Must have the same number of rows as R
 #' @param correlation If TRUE, return correlations instead of covariances
 #' @examples
+#' # Create variable names
+#' v_names <- c(paste0("A_", 1:3),paste0("B_", 1:3))
+#' v_composites <- c("A", "B")
+#'
 #' # Create covariance matrix
-#' Sigma <- matrix(0.6, nrow = 5, ncol = 5)
+#' Sigma <- matrix(0.6, nrow = 6, ncol = 6, dimnames = list(v_names, v_names))
 #' diag(Sigma) <- 1
+#'
 #' # Create weight matrix
-#' w <- matrix(0, nrow = 5, ncol = 2)
-#' w[1:2,1] <- 1
-#' w[3:5,2] <- 1
+#' w <- matrix(0, nrow = 6, ncol = 2, dimnames = list(v_names, v_composites))
+#' w[v_names[1:3],"A"] <- 1
+#' w[v_names[4:6],"B"] <- 1
 #' w
 #' # covariance matrix of weighted sums
 #' composite_covariance(Sigma, w)
@@ -52,10 +57,24 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #' @param ci confidence level
 #' @param v_names a vector of names
 #'
-#' @return data.frame
-#' @export
+#' @return A data frame with the following columns:
+#' \itemize{
+#'   \item `variable` - Variable names
+#'   \item `x` - Variable scores
+#'   \item `rxx` - Reliability coefficients
+#'   \item `mu_univariate` - Expected true score estimated from the corresponding observed score
+#'   \item `see_univariate` - Standard error of the estimate computed from the corresponding reliability coefficient
+#'   \item `mu_multivariate` - Expected true score estimated from all observed scores
+#'   \item `see_multivariate` - Standard error of the estimate computed from the corresponding reliability coefficient
+#'   \item `upper_univariate` - upper bound of univariate confidence interval
+#'   \item `lower_univariate` - lower bound of univariate confidence interval
+#'   \item `upper_multivariate` - upper bound of multivariate confidence interval
+#'   \item `lower_multivariate` - lower bound of multivariate confidence interval
+#' }
 #'
+#' @export
 #' @examples
+#' # Observed Scores
 #' x_wisc <- c(
 #'   vci = 130,
 #'   vsi = 130,
@@ -63,6 +82,8 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #'   wmi = 130,
 #'   psi = 130
 #' )
+#'
+#' # Reliability Coefficients
 #' rxx_wisc <- c(
 #'   vci = .92,
 #'   vsi = .92,
@@ -70,6 +91,8 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #'   wmi = .92,
 #'   psi = .88
 #'   )
+#'
+#' # Correlation matrix
 #' R_wisc <- ("
 #'   index	vci 	vsi 	fri 	wmi 	psi
 #'   vci  	1.00	0.59	0.59	0.53	0.30
@@ -80,12 +103,25 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #'     readr::read_tsv() |>
 #'     tibble::column_to_rownames("index") |>
 #'     as.matrix()
-#'  multivariate_ci(
+#'
+#'  # Covariance matrix
+#'  Sigma_wisc <- R_wisc * 15 ^ 2
+#'
+#'  # Population means#'
+#'  mu_wisc <- rep(100, 5)
+#'
+#'  mci_wisc <- multivariate_ci(
 #'    x = x_wisc,
 #'    rxx = rxx_wisc,
-#'    mu = rep(100, 5),
-#'    sigma = R_wisc * 225
+#'    mu = mu_wisc,
+#'    sigma = Sigma_wisc
 #'  )
+#'
+#'  mci_wisc
+#'
+#'  # Conditional covariance of true score estimates
+#'  attr(mci_wisc, "conditional_covariance")
+#'
 multivariate_ci <- function(x, rxx, mu, sigma, ci = .95, v_names = names(x)) {
   v_observed <- paste0(v_names, "_observed")
   v_true <- paste0(v_names, "_true")
@@ -106,8 +142,8 @@ multivariate_ci <- function(x, rxx, mu, sigma, ci = .95, v_names = names(x)) {
   see_univariate <- sqrt(diag(sigma) * (rxx - rxx ^ 2))
   see_multivariate <- sqrt(diag(sigma_conditional))
 
-  data.frame(
-    score = v_names,
+  d <- data.frame(
+    variable = v_names,
     x = x,
     rxx = rxx,
     mu_univariate = mu_univariate,
@@ -120,7 +156,235 @@ multivariate_ci <- function(x, rxx, mu, sigma, ci = .95, v_names = names(x)) {
     lower_multivariate = stats::qnorm(lower_p, mu_conditional, see_multivariate)
   )
 
+  attr(d, "conditional_covariance") <- sigma_conditional
+
+  return(d)
+
 
 }
+
+
+
+#' Convert W scores to a probabilities
+#'
+#' @param w person ability in w-score units
+#' @param refw item difficulty in w-score units
+#'
+#' @return numeric vector of probabilities
+#' @export
+#'
+#' @examples
+#' w2p(w = 520, refw = 500)
+w2p <- function(w = 500, refw = 500) {
+  (1 + exp(-(w - refw) / (20 / log(9)))) ^ -1
+}
+
+
+#' Convert logits to W scores
+#'
+#' @param logit numeric vector of logits
+#' @param refw numeric vector of reference W scores
+#'
+#' @return numeric vector of W scores
+#' @export
+#'
+#' @examples
+#' logit2w(2)
+#'
+logit2w <- function(logit, refw = 500) {
+  logit * 20 / log(9) + refw
+}
+
+
+
+#' Convert W scores to logits
+#'
+#' @param w numeric vector of W scores
+#' @param refw numeric vector of reference W scores
+#'
+#' @return numeric vector of logits
+#' @export
+#'
+#' @examples
+#' w2logit(540)
+w2logit <- function(w, refw = 500) {
+  log(9) * (w - refw) / 20
+}
+
+
+#' Convert W scores to relative proficiency index
+#'
+#' @param w numeric vector of W scores
+#' @param refw numeric vector of reference W scores
+#' @param criterion numeric proficiency criterion
+#' @param referse boolean. If TRUE, the criterion refers to the proficiency of the person instead of the proficiency of the peer group. In other words, the role of the w and refw are reversed.
+#' @param interpretation If TRUE, print method will provide an interpretation of
+#'   the relative proficiency.
+#'
+#' @return numeric
+#' @export
+#'
+#' @examples
+#' # What is the probability a person with a W score of 540 can pass
+#' # an item that a person with a 500 W score can pass with a
+#' # probability of .90?
+#' w2rpi(w = 540, refw = 500, criterion = .9)
+#' # Same as above but with an interpretive statement
+#' w2rpi(w = 540, refw = 500, criterion = .9, interpretation = TRUE)
+#' # When a person with a W score of 540 has a .9 probability of
+#' # passing an item, what is the probability that a person with a W
+#' # score of 500 will pass it?
+#' w2rpi(w = 540, refw = 500, criterion = .9, referse = TRUE, interpretation = TRUE)
+w2rpi <- function(w,
+                  refw = 500,
+                  criterion = .9,
+                  referse = FALSE,
+                  interpretation = FALSE) {
+  if (referse) {
+    x <- (1 + exp(log((1 - criterion) / criterion) + (w - refw) / (20 / log(9)))) ^ -1
+
+  } else {
+    x <- (1 + exp(-(log(criterion / (1 - criterion)) + (w - refw) / (20 / log(9))))) ^ -1
+  }
+
+  class(x) <- c(class(x), "rpi")
+  attr(x, "p") <- criterion
+  attr(x, "referse") <- referse
+  attr(x, "interpretation") <- interpretation
+  x
+
+}
+
+format.rpi <- function(x, ...) {
+
+  if (attr(x, "interpretation")) {
+    if (attr(x, "referse")) {
+      paste0(
+        "For an item that this person has a ",
+        WJSmisc::prob_label(attr(x, "criterion"), digits = 2),
+        " probability of answering correctly, the probability that a same-age peer of average ability will answer it correctly is ",
+        WJSmisc::prob_label(x, digits = 2),
+        "."
+      )
+
+    } else {
+      paste0(
+        "For an item that a same-age peer of average ability has a ",
+        WJSmisc::prob_label(attr(x, "criterion"), digits = 2),
+        " probability of answering correctly, the probability that this person will answer it correctly is ",
+        WJSmisc::prob_label(x, digits = 2),
+        "."
+      )
+
+    }
+
+
+  } else x
+}
+
+print.rpi <- function(x, ...) cat(format(x, ...))
+
+
+
+
+
+
+
+
+
+
+#' Conditional Covariance
+#'
+#' @param x named numeric vector of predictor scores
+#' @param sigma named covariance matrix of predictor and outcome variables
+#' @param mu a single numeric mean for all variables or a named vector of means of predictor and outcome variables
+#'
+#' @return list of conditional means and a covariance matrix
+#' \itemize{
+#'   \item `mu_conditional` - The means of the outcome variables conditioned on the values of the predictors in vector x.
+#'   \item `mu_sigma` - The covariance matrix of the outcome variables conditioned on the values of the predictors in vector x.
+#'   \item `descriptives_conditional` - A data frame of means and standard deviations of the outcome variables conditioned on the values of the predictors in vector x.
+#'   \item `x` - The predictor scores from the x parameter
+#'   \item `sigma` - The unconditional covariance matrix from the sigma parameter
+#'   \item `mu` - Anamed vector of unconditional means
+#' }
+#' @export
+#'
+#' @examples
+#' # Named vector of predictor scores
+#' x <- c(A = 1)
+#'
+#' # Named vector of unconditional means
+#' mu <- c(A = 0, B = 0, C = 0)
+#'
+#' # Unconditional covariance matrix with row and column names
+#' sigma <- matrix(c(1, .5, .5,
+#'                   .5, 1, .5,
+#'                   .5, .5, 1),
+#'                 nrow = 3,
+#'                 ncol = 3,
+#'                 dimnames = list(names(mu),
+#'                                 names(mu)))
+#'
+#' # Conditoinal means and covariance matrix
+#' conditional_covariance(x = x, sigma = sigma, mu = mu)
+#'
+conditional_covariance <- function(x, sigma, mu = 0) {
+  if (!("matrix" %in% class(sigma))) stop("sigma must be a matrix.")
+  if (is.null(names(x))) stop("x must be a named vector.")
+  if (is.null(colnames(sigma))) stop("sigma must have column names.")
+  if (is.null(rownames(sigma))) stop("sigma must have row names.")
+  if (!all(rownames(sigma) == colnames(sigma))) stop("The row and column names for sigma must be identical.")
+  if (!isSymmetric(sigma)) stop("sigma must be a symmetric square matrix.")
+
+  v_names <- colnames(sigma)
+  x_names <- names(x)
+  y_names <- setdiff(v_names, x_names)
+  x_missing <- x_names[is.na(x)]
+  x_names <- setdiff(x_names, x_missing)
+
+  if (length(y_names) == 0) stop("There are no variables in sigma that are not in x.")
+
+  if (length(setdiff(x_names, v_names)) > 0) stop(paste0("The following variables in x are not in sigma: ", setdiff(x_names, v_names)))
+
+  if (length(mu) == 1) {
+    mu = rep(mu, length(v_names))
+    names(mu) <- v_names
+  } else if (is.null(names(mu))) {
+    if (ncol(sigma) != length(mu)) stop("mu and the columns of sigma are of different length.")
+    names(mu) <- v_names
+  } else if (!setequal(v_names, names(mu))) {
+     stop("The names in mu and the column names of sigma are not the same.")
+  } else if (is.null(names(mu))) {
+    names(mu) <- x_names
+  }
+
+
+  sigma_x <- sigma[x_names, x_names]
+  if (!all(eigen(sigma_x)$values > 0)) stop("The covariance matrix of the predictor variables is not positive definite.")
+  invsigma_x <- solve(sigma_x)
+
+  mu_y <- mu[y_names]
+  mu_x <- mu[x_names]
+  sigma_y <- sigma[y_names, y_names]
+  sigma_xy <- sigma[x_names, y_names]
+  sigma_yx <- sigma[y_names, x_names]
+  mu_y.x <- mu_y + (sigma_yx %*% invsigma_x %*% (x - mu_x))[,1, drop = TRUE]
+
+  sigma_y.x <- sigma_y - sigma_yx %*% invsigma_x %*% sigma_xy
+
+  l <- list(mu_conditional = mu_y.x,
+       sigma_conditional = sigma_y.x,
+       descriptives_conditional = data.frame(
+         construct = names(mu_y.x),
+         mu_conditional = mu_y.x,
+         sigma_conditional = sqrt(diag(sigma_y.x, names = TRUE))),
+       x = x,
+       sigma = sigma,
+       mu = mu)
+  l
+}
+
+
 
 

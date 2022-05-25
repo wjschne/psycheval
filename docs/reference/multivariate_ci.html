@@ -17,7 +17,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div id="navbar" class="collapse navbar-collapse ms-2">
+    <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
@@ -68,18 +68,31 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>data.frame</p>
-    </div>
+    <p>A data frame with the following columns:</p><ul><li><p><code>variable</code> - Variable names</p></li>
+<li><p><code>x</code> - Variable scores</p></li>
+<li><p><code>rxx</code> - Reliability coefficients</p></li>
+<li><p><code>mu_univariate</code> - Expected true score estimated from the corresponding observed score</p></li>
+<li><p><code>see_univariate</code> - Standard error of the estimate computed from the corresponding reliability coefficient</p></li>
+<li><p><code>mu_multivariate</code> - Expected true score estimated from all observed scores</p></li>
+<li><p><code>see_multivariate</code> - Standard error of the estimate computed from the corresponding reliability coefficient</p></li>
+<li><p><code>upper_univariate</code> - upper bound of univariate confidence interval</p></li>
+<li><p><code>lower_univariate</code> - lower bound of univariate confidence interval</p></li>
+<li><p><code>upper_multivariate</code> - upper bound of multivariate confidence interval</p></li>
+<li><p><code>lower_multivariate</code> - lower bound of multivariate confidence interval</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x_wisc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Observed Scores</span></span>
+<span class="r-in"><span class="va">x_wisc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span class="r-in">  vci <span class="op">=</span> <span class="fl">130</span>,</span>
 <span class="r-in">  vsi <span class="op">=</span> <span class="fl">130</span>,</span>
 <span class="r-in">  fri <span class="op">=</span> <span class="fl">70</span>,</span>
 <span class="r-in">  wmi <span class="op">=</span> <span class="fl">130</span>,</span>
 <span class="r-in">  psi <span class="op">=</span> <span class="fl">130</span></span>
 <span class="r-in"><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Reliability Coefficients</span></span>
 <span class="r-in"><span class="va">rxx_wisc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span class="r-in">  vci <span class="op">=</span> <span class="fl">.92</span>,</span>
 <span class="r-in">  vsi <span class="op">=</span> <span class="fl">.92</span>,</span>
@@ -87,6 +100,8 @@
 <span class="r-in">  wmi <span class="op">=</span> <span class="fl">.92</span>,</span>
 <span class="r-in">  psi <span class="op">=</span> <span class="fl">.88</span></span>
 <span class="r-in">  <span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Correlation matrix</span></span>
 <span class="r-in"><span class="va">R_wisc</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="st">"</span>
 <span class="r-in">  index  vci   vsi   fri   wmi   psi</span>
 <span class="r-in">  vci    1.00  0.59  0.59  0.53  0.30</span>
@@ -103,20 +118,29 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">chr</span> (1): index</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">dbl</span> (5): vci, vsi, fri, wmi, psi</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">i</span> Use <span style="color: #262626; background-color: #DADADA;">`spec()`</span> to retrieve the full column specification for this data.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">i</span> Specify the column types or set <span style="color: #262626; background-color: #DADADA;">`show_col_types = FALSE`</span> to quiet this message.</span>
-<span class="r-in"> <span class="fu">multivariate_ci</span><span class="op">(</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">i</span> Use `spec()` to retrieve the full column specification for this data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">i</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.</span>
+<span class="r-in"></span>
+<span class="r-in"> <span class="co"># Covariance matrix</span></span>
+<span class="r-in"> <span class="va">Sigma_wisc</span> <span class="op">&lt;-</span> <span class="va">R_wisc</span> <span class="op">*</span> <span class="fl">15</span> <span class="op">^</span> <span class="fl">2</span></span>
+<span class="r-in"></span>
+<span class="r-in"> <span class="co"># Population means#'</span></span>
+<span class="r-in"> <span class="va">mu_wisc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">5</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"> <span class="va">mci_wisc</span> <span class="op">&lt;-</span> <span class="fu">multivariate_ci</span><span class="op">(</span></span>
 <span class="r-in">   x <span class="op">=</span> <span class="va">x_wisc</span>,</span>
 <span class="r-in">   rxx <span class="op">=</span> <span class="va">rxx_wisc</span>,</span>
-<span class="r-in">   mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">5</span><span class="op">)</span>,</span>
-<span class="r-in">   sigma <span class="op">=</span> <span class="va">R_wisc</span> <span class="op">*</span> <span class="fl">225</span></span>
+<span class="r-in">   mu <span class="op">=</span> <span class="va">mu_wisc</span>,</span>
+<span class="r-in">   sigma <span class="op">=</span> <span class="va">Sigma_wisc</span></span>
 <span class="r-in"> <span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     score   x  rxx mu_univariate see_univariate mu_multivariate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> vci   vci 130 0.92         127.6       4.069398       126.69804</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> vsi   vsi 130 0.92         127.6       4.069398       126.11601</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fri   fri  70 0.93          72.1       3.827205        77.64056</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> wmi   wmi 130 0.92         127.6       4.069398       127.29155</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> psi   psi 130 0.88         126.4       4.874423       127.38539</span>
+<span class="r-in"></span>
+<span class="r-in"> <span class="va">mci_wisc</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     variable   x  rxx mu_univariate see_univariate mu_multivariate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vci      vci 130 0.92         127.6       4.069398       126.69804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vsi      vsi 130 0.92         127.6       4.069398       126.11601</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fri      fri  70 0.93          72.1       3.827205        77.64056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wmi      wmi 130 0.92         127.6       4.069398       127.29155</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi      psi 130 0.88         126.4       4.874423       127.38539</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     see_multivariate upper_univariate lower_univariate upper_multivariate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> vci         3.911922        135.57587        119.62413          134.36526</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> vsi         3.896561        135.57587        119.62413          133.75313</span>
@@ -129,6 +153,16 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> fri            70.4173</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> wmi           119.5422</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> psi           117.9716</span>
+<span class="r-in"></span>
+<span class="r-in"> <span class="co"># Conditional covariance of true score estimates</span></span>
+<span class="r-in"> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">mci_wisc</span>, <span class="st">"conditional_covariance"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            vci        vsi        fri        wmi        psi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vci 15.3031321  0.7940793  0.6610628  0.6064452  0.1059996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> vsi  0.7940793 15.1831840  0.8677571  0.3369836  0.5206229</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fri  0.6610628  0.8677571 13.5822068  0.5011386  0.1153453</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> wmi  0.6064452  0.3369836  0.5011386 15.6328484  0.5570710</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi  0.1059996  0.5206229  0.1153453  0.5570710 23.0690477</span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -140,7 +174,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer></div>
