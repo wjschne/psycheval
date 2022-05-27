@@ -72,11 +72,8 @@
 </div>
 </div>
 <div class="section level1">
-<h1 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a>
+<h1 id="convert-a-variable-to-standard-scores">Convert a variable to standard scores<a class="anchor" aria-label="anchor" href="#convert-a-variable-to-standard-scores"></a>
 </h1>
-<div class="section level2">
-<h2 id="convert-a-variable-to-standard-scores">Convert a variable to standard scores<a class="anchor" aria-label="anchor" href="#convert-a-variable-to-standard-scores"></a>
-</h2>
 <p>Suppose you have a scaled score of 12 (<em>μ</em> = 10, <em>σ</em> = 3) that you want to convert to a standard score (<em>μ</em> = 100, <em>σ</em> = 15).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/wjschne/psycheval" class="external-link">psycheval</a></span><span class="op">)</span>
@@ -95,9 +92,9 @@
            mu_new <span class="op">=</span> <span class="fl">50</span>, sigma_new <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="co">#&gt; [1] 57</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="covariance-of-weighted-sums">Covariance of weighted sums<a class="anchor" aria-label="anchor" href="#covariance-of-weighted-sums"></a>
-</h2>
+<div class="section level1">
+<h1 id="covariance-of-weighted-sums">Covariance of weighted sums<a class="anchor" aria-label="anchor" href="#covariance-of-weighted-sums"></a>
+</h1>
 <p>Let’s create a covariance matrix of 5 variables that all correlate at .60.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Create covariance matrix</span>
@@ -176,9 +173,9 @@
 <span class="co">#&gt; [6,] 0.8944 0.8944 0.6708 0.6708 0.6708 1.0000 0.7833</span>
 <span class="co">#&gt; [7,] 0.7006 0.7006 0.8563 0.8563 0.8563 0.7833 1.0000</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="compute-a-multivariate-confidence-interval-conditioned-on-a-set-of-observed-scores">Compute a multivariate confidence interval conditioned on a set of observed scores<a class="anchor" aria-label="anchor" href="#compute-a-multivariate-confidence-interval-conditioned-on-a-set-of-observed-scores"></a>
-</h2>
+<div class="section level1">
+<h1 id="compute-a-multivariate-confidence-interval-conditioned-on-a-set-of-observed-scores">Compute a multivariate confidence interval conditioned on a set of observed scores<a class="anchor" aria-label="anchor" href="#compute-a-multivariate-confidence-interval-conditioned-on-a-set-of-observed-scores"></a>
+</h1>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
@@ -236,12 +233,12 @@
   sigma <span class="op">=</span> <span class="va">R_wisc</span> <span class="op">*</span> <span class="fl">225</span><span class="op">)</span>
 
 <span class="va">d_ci</span> 
-<span class="co">#&gt;     score   x  rxx mu_univariate see_univariate mu_multivariate</span>
-<span class="co">#&gt; vci   vci 130 0.92        127.60          4.069          127.88</span>
-<span class="co">#&gt; vsi   vsi 120 0.92        118.40          4.069          119.70</span>
-<span class="co">#&gt; fri   fri 123 0.93        121.39          3.827          122.33</span>
-<span class="co">#&gt; wmi   wmi 116 0.92        114.72          4.069          115.95</span>
-<span class="co">#&gt; psi   psi  97 0.88         97.36          4.874           98.86</span>
+<span class="co">#&gt;     variable   x  rxx mu_univariate see_univariate mu_multivariate</span>
+<span class="co">#&gt; vci      vci 130 0.92        127.60          4.069          127.88</span>
+<span class="co">#&gt; vsi      vsi 120 0.92        118.40          4.069          119.70</span>
+<span class="co">#&gt; fri      fri 123 0.93        121.39          3.827          122.33</span>
+<span class="co">#&gt; wmi      wmi 116 0.92        114.72          4.069          115.95</span>
+<span class="co">#&gt; psi      psi  97 0.88         97.36          4.874           98.86</span>
 <span class="co">#&gt;     see_multivariate upper_univariate lower_univariate upper_multivariate</span>
 <span class="co">#&gt; vci            3.912            135.6           119.62              135.5</span>
 <span class="co">#&gt; vsi            3.897            126.4           110.42              127.3</span>
@@ -256,6 +253,21 @@
 <span class="co">#&gt; psi              89.44</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-10-1.png" width="100%"></p>
 </div>
+<div class="section level1">
+<h1 id="relative-proficiency-index">Relative Proficiency Index<a class="anchor" aria-label="anchor" href="#relative-proficiency-index"></a>
+</h1>
+<p>When a typical same-age peer with an ability of W = 500 has a .90 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/rpi.html">rpi</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">520</span>, mu <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
+<span class="co">#&gt; 0.9878</span></code></pre></div>
+<p>Flipping the previous question, when a person with ability of W = 520 has a .90 probability of answering a question correctly, what is the probability that a typical same-age peer with an ability of W = 500 will answer the question correctly?</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/rpi.html">rpi</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">520</span>, mu <span class="op">=</span> <span class="fl">500</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; 0.5</span></code></pre></div>
+<p>Criteria other than .9 proficiency are also possible. For example, when a typical same-age peer with an ability of W = 500 has a .25 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/rpi.html">rpi</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">520</span>, mu <span class="op">=</span> <span class="fl">500</span>, criterion <span class="op">=</span> <span class="fl">.25</span><span class="op">)</span>
+<span class="co">#&gt; 0.75</span></code></pre></div>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
