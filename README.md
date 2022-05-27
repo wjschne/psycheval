@@ -19,9 +19,7 @@ You can install the development version of psycheval like so:
 remotes::install_github("wjschne/psycheval")
 ```
 
-# Functions
-
-## Convert a variable to standard scores
+# Convert a variable to standard scores
 
 Suppose you have a scaled score of 12 (*μ* = 10, *σ* = 3) that you want
 to convert to a standard score (*μ* = 100, *σ* = 15).
@@ -50,7 +48,7 @@ x2standard(12,
 #> [1] 57
 ```
 
-## Covariance of weighted sums
+# Covariance of weighted sums
 
 Let’s create a covariance matrix of 5 variables that all correlate at
 .60.
@@ -149,7 +147,7 @@ composite_covariance(Sigma, w_expanded, correlation = T)
 #> [7,] 0.7006 0.7006 0.8563 0.8563 0.8563 0.7833 1.0000
 ```
 
-## Compute a multivariate confidence interval conditioned on a set of observed scores
+# Compute a multivariate confidence interval conditioned on a set of observed scores
 
 ``` r
 library(readr)
@@ -208,12 +206,12 @@ d_ci <- multivariate_ci(
   sigma = R_wisc * 225)
 
 d_ci 
-#>     score   x  rxx mu_univariate see_univariate mu_multivariate
-#> vci   vci 130 0.92        127.60          4.069          127.88
-#> vsi   vsi 120 0.92        118.40          4.069          119.70
-#> fri   fri 123 0.93        121.39          3.827          122.33
-#> wmi   wmi 116 0.92        114.72          4.069          115.95
-#> psi   psi  97 0.88         97.36          4.874           98.86
+#>     variable   x  rxx mu_univariate see_univariate mu_multivariate
+#> vci      vci 130 0.92        127.60          4.069          127.88
+#> vsi      vsi 120 0.92        118.40          4.069          119.70
+#> fri      fri 123 0.93        121.39          3.827          122.33
+#> wmi      wmi 116 0.92        114.72          4.069          115.95
+#> psi      psi  97 0.88         97.36          4.874           98.86
 #>     see_multivariate upper_univariate lower_univariate upper_multivariate
 #> vci            3.912            135.6           119.62              135.5
 #> vsi            3.897            126.4           110.42              127.3
@@ -229,3 +227,35 @@ d_ci
 ```
 
 <img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+
+# Relative Proficiency Index
+
+When a typical same-age peer with an ability of W = 500 has a .90
+probability of answering a question correctly, what is the probability
+that a person with ability of W = 520 will answer the question
+correctly?
+
+``` r
+rpi(x = 520, mu = 500)
+#> 0.9878
+```
+
+Flipping the previous question, when a person with ability of W = 520
+has a .90 probability of answering a question correctly, what is the
+probability that a typical same-age peer with an ability of W = 500 will
+answer the question correctly?
+
+``` r
+rpi(x = 520, mu = 500, reverse = TRUE)
+#> 0.5
+```
+
+Criteria other than .9 proficiency are also possible. For example, when
+a typical same-age peer with an ability of W = 500 has a .25 probability
+of answering a question correctly, what is the probability that a person
+with ability of W = 520 will answer the question correctly?
+
+``` r
+rpi(x = 520, mu = 500, criterion = .25)
+#> 0.75
+```

@@ -212,14 +212,17 @@ w2logit <- function(w, refw = 500) {
 }
 
 
-#' Convert W scores to relative proficiency index
+#' Convert ability (in W scores by default) to relative proficiency index
 #'
-#' @param w numeric vector of W scores
-#' @param refw numeric vector of reference W scores
-#' @param criterion numeric proficiency criterion
-#' @param referse boolean. If TRUE, the criterion refers to the proficiency of the person instead of the proficiency of the peer group. In other words, the role of the w and refw are reversed.
-#' @param interpretation If TRUE, print method will provide an interpretation of
-#'   the relative proficiency.
+#' @param x numeric vector of ability scores
+#' @param mu numeric vector of ability scores of reference group
+#' @param scale number vector of scaling factor. The default value (`log(9) / 20`) assumes that x and mu are W scores.
+#' @param criterion numeric proficiency criterion (between 0 and 1, exclusive)
+#' @param reverse boolean. If TRUE, the criterion refers to the
+#' proficiency of the person instead of the proficiency of the peer
+#' group. In other words, the role of the x and mu are reversed.
+#' @param interpretation If TRUE, the rpi's print method will provide an interpretation of
+#' the relative proficiency.
 #'
 #' @return numeric
 #' @export
@@ -228,52 +231,64 @@ w2logit <- function(w, refw = 500) {
 #' # What is the probability a person with a W score of 540 can pass
 #' # an item that a person with a 500 W score can pass with a
 #' # probability of .90?
-#' w2rpi(w = 540, refw = 500, criterion = .9)
+#' rpi(x = 540, mu = 500, criterion = .9)
 #' # Same as above but with an interpretive statement
-#' w2rpi(w = 540, refw = 500, criterion = .9, interpretation = TRUE)
+#' rpi(x = 540, mu = 500, criterion = .9, interpretation = TRUE)
 #' # When a person with a W score of 540 has a .9 probability of
 #' # passing an item, what is the probability that a person with a W
 #' # score of 500 will pass it?
-#' w2rpi(w = 540, refw = 500, criterion = .9, referse = TRUE, interpretation = TRUE)
-w2rpi <- function(w,
-                  refw = 500,
-                  criterion = .9,
-                  referse = FALSE,
-                  interpretation = FALSE) {
-  if (referse) {
-    x <- (1 + exp(log((1 - criterion) / criterion) + (w - refw) / (20 / log(9)))) ^ -1
+#' rpi(x = 540, mu = 500, criterion = .9, reverse = TRUE, interpretation = TRUE)
+rpi <- function(x,
+                mu = 500,
+                scale = 20 / log(9),
+                criterion = .9,
+                reverse = FALSE,
+                interpretation = FALSE) {
+  if (criterion >= 1 | criterion <= 0) stop("criterion must be between 0 and 1, exclusive")
+  if (reverse) {
+    r <- (1 + exp(log((1 - criterion) / criterion) + (x - mu) / scale )) ^ -1
 
   } else {
-    x <- (1 + exp(-(log(criterion / (1 - criterion)) + (w - refw) / (20 / log(9))))) ^ -1
+    r <- (1 + exp(-(log(criterion / (1 - criterion)) + (x - mu) / scale))) ^ -1
   }
 
-  class(x) <- c(class(x), "rpi")
-  attr(x, "p") <- criterion
-  attr(x, "referse") <- referse
-  attr(x, "interpretation") <- interpretation
-  x
+  class(r) <- c("rpi", class(r))
+  attr(r, "criterion") <- criterion
+  attr(r, "reverse") <- reverse
+  attr(r, "interpretation") <- interpretation
+  attr(r, "scale") <- scale
+  r
 
 }
 
+#' Format rpi class
+#'
+#' @param x object with class rpi
+#' @param ... additional parameters
+#'
+#' @return text
+#' @noRd
+#' @keywords internal
+#' @export
 format.rpi <- function(x, ...) {
 
   if (attr(x, "interpretation")) {
-    if (attr(x, "referse")) {
+    if (attr(x, "reverse")) {
       paste0(
-        "For an item that this person has a ",
+        "When this person has a ",
         WJSmisc::prob_label(attr(x, "criterion"), digits = 2),
-        " probability of answering correctly, the probability that a same-age peer of average ability will answer it correctly is ",
+        " probability of answering an item correctly, a same-age peer of average ability has a ",
         WJSmisc::prob_label(x, digits = 2),
-        "."
+        " probability of answering it correctly."
       )
 
     } else {
       paste0(
-        "For an item that a same-age peer of average ability has a ",
+        "When a same-age peer of average ability has a ",
         WJSmisc::prob_label(attr(x, "criterion"), digits = 2),
-        " probability of answering correctly, the probability that this person will answer it correctly is ",
+        " probability of answering an item correctly, this person has a ",
         WJSmisc::prob_label(x, digits = 2),
-        "."
+        " probability of answering it correctly."
       )
 
     }
@@ -282,7 +297,18 @@ format.rpi <- function(x, ...) {
   } else x
 }
 
-print.rpi <- function(x, ...) cat(format(x, ...))
+#' Print object of class rpi
+#'
+#' @param x object of class rpi
+#' @param ...  addtional parameters
+#'
+#' @return character
+#' @noRd
+#' @keywords internal
+#' @export
+print.rpi <- function(x, ...) {
+  cat(format(x, ...))
+  }
 
 
 

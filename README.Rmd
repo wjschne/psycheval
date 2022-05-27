@@ -31,9 +31,8 @@ You can install the development version of psycheval like so:
 remotes::install_github("wjschne/psycheval")
 ```
 
-# Functions
 
-## Convert a variable to standard scores
+# Convert a variable to standard scores
 
 Suppose you have a scaled score of 12 (*&mu;* = 10, *&sigma;* = 3) that you want to convert to a standard score (*&mu;* = 100, *&sigma;* = 15).
 
@@ -59,7 +58,7 @@ x2standard(12,
            mu_new = 50, sigma_new = 10)
 ```
 
-## Covariance of weighted sums
+# Covariance of weighted sums
 
 Let's create a covariance matrix of 5 variables that all correlate at .60.
 
@@ -113,7 +112,7 @@ composite_covariance(Sigma, w_expanded, correlation = T)
 ```
 
 
-## Compute a multivariate confidence interval conditioned on a set of observed scores
+# Compute a multivariate confidence interval conditioned on a set of observed scores
 
 
 ```{r}
@@ -165,10 +164,10 @@ d_ci
 ```{r, echo = FALSE, fig.height=7}
 
 d_ci |> 
-  tidyr::pivot_longer(-score:-rxx) |> 
+  tidyr::pivot_longer(-variable:-rxx) |> 
   tidyr::separate(name, c("statistic", "type")) |> 
   tidyr::pivot_wider(names_from = statistic, values_from = value) |> 
-  mutate(score = toupper(score) |> forcats::fct_inorder(),
+  mutate(score = toupper(x) |> forcats::fct_inorder(),
          type = stringr::str_to_title(type) |> factor(levels = c("Univariate", "Multivariate"))) |> 
   ggplot(aes(score, mu, color = type)) +
   geom_point(aes(y = x), color = "gray20", size = 2.5) +
@@ -184,3 +183,25 @@ d_ci |>
                      limits = c(40, 160))
 ```
 
+
+# Relative Proficiency Index
+
+When a typical same-age peer with an ability of W = 500 has a .90 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?
+
+```{r}
+rpi(x = 520, mu = 500)
+```
+
+
+Flipping the previous question, when a person with ability of W = 520 has a .90 probability of answering a question correctly, what is the probability that a typical same-age peer with an ability of W = 500 will answer the question correctly?
+
+```{r}
+rpi(x = 520, mu = 500, reverse = TRUE)
+```
+
+
+Criteria other than .9 proficiency are also possible. For example, when a typical same-age peer with an ability of W = 500 has a .25 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?
+
+```{r}
+rpi(x = 520, mu = 500, criterion = .25)
+```
