@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{composite_score}
 \alias{composite_score}
-\title{Composite composite score}
+\title{Compute composite score}
 \usage{
 composite_score(
   x,
@@ -30,7 +30,7 @@ composite_score(
 composite score
 }
 \description{
-Composite composite score
+Compute composite score
 }
 \examples{
 # Subtest scores

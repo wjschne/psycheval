@@ -510,7 +510,7 @@ difference_score <- function(x,
 }
 
 
-#' Composite composite score
+#' Compute composite score
 #'
 #' @param x Vector of subtest scores
 #' @param R Subtest score correlation matrix
