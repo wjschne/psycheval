@@ -16,16 +16,14 @@ LazyData: true
 URL: https://github.com/wjschne/psycheval
 BugReports: https://github.com/wjschne/psycheval/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Imports: 
-    dplyr,
-    forcats,
-    ggplot2,
-    readr,
-    tibble,
+    stats,
     WJSmisc (>= 0.3)
 Suggests: 
+    readr,
+    tibble,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Remotes:  
+Remotes: 
     https://github.com/wjschne/WJSmisc

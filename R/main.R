@@ -51,7 +51,7 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #' General a multivariate confidence interval for a set of scores
 #'
 #' @param x a vector of scores
-#' @param rxx a vector reliability coefficients
+#' @param r_xx a vector reliability coefficients
 #' @param mu  a vector means
 #' @param sigma a covariance matrix
 #' @param ci confidence level
@@ -61,7 +61,7 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #' \itemize{
 #'   \item `variable` - Variable names
 #'   \item `x` - Variable scores
-#'   \item `rxx` - Reliability coefficients
+#'   \item `r_xx` - Reliability coefficients
 #'   \item `mu_univariate` - Expected true score estimated from the corresponding observed score
 #'   \item `see_univariate` - Standard error of the estimate computed from the corresponding reliability coefficient
 #'   \item `mu_multivariate` - Expected true score estimated from all observed scores
@@ -75,7 +75,7 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #' @export
 #' @examples
 #' # Observed Scores
-#' x_wisc <- c(
+#' x <- c(
 #'   vci = 130,
 #'   vsi = 130,
 #'   fri = 70,
@@ -84,7 +84,7 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #' )
 #'
 #' # Reliability Coefficients
-#' rxx_wisc <- c(
+#' r_xx <- c(
 #'   vci = .92,
 #'   vsi = .92,
 #'   fri = .93,
@@ -93,7 +93,7 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #'   )
 #'
 #' # Correlation matrix
-#' R_wisc <- ("
+#' R <- ("
 #'   index	vci 	vsi 	fri 	wmi 	psi
 #'   vci  	1.00	0.59	0.59	0.53	0.30
 #'   vsi  	0.59	1.00	0.62	0.50	0.36
@@ -105,33 +105,33 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #'     as.matrix()
 #'
 #'  # Covariance matrix
-#'  Sigma_wisc <- R_wisc * 15 ^ 2
+#'  sigma <- R * 15 ^ 2
 #'
 #'  # Population means#'
-#'  mu_wisc <- rep(100, 5)
+#'  mu <- rep(100, 5)
 #'
-#'  mci_wisc <- multivariate_ci(
-#'    x = x_wisc,
-#'    rxx = rxx_wisc,
-#'    mu = mu_wisc,
-#'    sigma = Sigma_wisc
+#'  mci <- multivariate_ci(
+#'    x = x,
+#'    r_xx = r_xx,
+#'    mu = mu,
+#'    sigma = sigma
 #'  )
 #'
-#'  mci_wisc
+#'  mci
 #'
 #'  # Conditional covariance of true score estimates
-#'  attr(mci_wisc, "conditional_covariance")
+#'  attr(mci, "conditional_covariance")
 #'
-multivariate_ci <- function(x, rxx, mu, sigma, ci = .95, v_names = names(x)) {
+multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
   v_observed <- paste0(v_names, "_observed")
   v_true <- paste0(v_names, "_true")
   v_all <- c(v_true, v_observed)
-  sigma_true <- `diag<-`(sigma , rxx * diag(sigma))
+  sigma_true <- `diag<-`(sigma , r_xx * diag(sigma))
   sigma_all <- `dimnames<-`(rbind(cbind(sigma_true, sigma_true),
                                   cbind(sigma_true, sigma)),
                             list(v_all,
                                  v_all))
-  mu_univariate = rxx * (x - mu) + mu
+  mu_univariate = r_xx * (x - mu) + mu
 
   lower_p <- (1 - ci) / 2
   upper_p <- 1 - lower_p
@@ -139,13 +139,13 @@ multivariate_ci <- function(x, rxx, mu, sigma, ci = .95, v_names = names(x)) {
   mu_conditional <- mu + sigma_true %*% solve(sigma) %*% (x - mu)
   sigma_conditional <-
     sigma_true - sigma_true %*% solve(sigma) %*% t(sigma_true)
-  see_univariate <- sqrt(diag(sigma) * (rxx - rxx ^ 2))
+  see_univariate <- sqrt(diag(sigma) * (r_xx - r_xx ^ 2))
   see_multivariate <- sqrt(diag(sigma_conditional))
 
   d <- data.frame(
     variable = v_names,
     x = x,
-    rxx = rxx,
+    r_xx = r_xx,
     mu_univariate = mu_univariate,
     see_univariate = see_univariate,
     mu_multivariate = mu_conditional,
@@ -411,6 +411,141 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   l
 }
 
+
+
+
+#' Difference score statistics
+#'
+#' @param x first score
+#' @param y second score
+#' @param r_xx reliability of x
+#' @param r_yy reliability of y
+#' @param r_xy correlation between x and y
+#' @param mu population mean of both x and y
+#' @param sigma population standard deviation of both x and y
+#' @param ci confidence interval of difference score
+#' @param tails for significance and prevalance of difference scores
+#' @param mu_x population mean of x (defaults to mu)
+#' @param mu_y population mean of y (defaults to mu)
+#' @param sigma_x population standard deviation of x (defaults to sigma)
+#' @param sigma_y population standard deviation of y (defaults to sigma)
+#' @return list
+#' @export
+#'
+#' @examples
+#' difference_score(
+#'   x = 120,
+#'   y = 110,
+#'   r_xx = .95,
+#'   r_yy = .92,
+#'   r_xy = .65,
+#'   mu = 100,
+#'   sigma = 15)
+difference_score <- function(x,
+                             y,
+                             r_xx = .90,
+                             r_yy = .90,
+                             r_xy = 0,
+                             mu = 100,
+                             sigma = 15,
+                             ci = .95,
+                             mu_x = mu,
+                             mu_y = mu,
+                             sigma_x = sigma,
+                             sigma_y = sigma,
+                             tails = 2) {
+
+  # Difference score
+  d <- x - y
+  # variance of difference score
+  var_d <- sigma_x ^ 2 + sigma_y ^ 2 - r_xy * sigma_x * sigma_y
+  # sd of difference score
+  sd_d <- sqrt(var_d)
+  # variance of true difference score
+  var_d_true <- r_xx * sigma_x ^ 2 + r_yy * sigma_y ^ 2 - r_xy * sigma_x * sigma_y
+
+  # reliability of differenc score
+  r_dd <- var_d_true / var_d
+
+  # z-score for confidence interval
+  z <- stats::qnorm(1 - (1 - ci) / tails)
+
+  # estimated true difference score
+  d_true <- r_dd * (d - (mu_x - mu_y)) + (mu_x - mu_y)
+  # lower bound of confidence interval
+  d_ci_lb <- d_true - z * sd_d * sqrt(r_dd * (1 - r_dd))
+  # upper bound of confidence interval
+  d_ci_ub <- d_true + z * sd_d * sqrt(r_dd * (1 - r_dd))
+
+  # standard deviatino of difference scores if true scores are equal
+  sd_d_if_true_scores_equal <- sqrt((sigma_x ^ 2) * (1 - r_xx) + (sigma_y ^ 2) * (1 - r_yy))
+
+  # significance-value of difference score
+  d_sig <- tails * stats::pnorm(-1 * abs(d) / sd_d_if_true_scores_equal)
+
+  # Prevalence of difference score
+  d_prevalence <- tails * stats::pnorm(-1 * abs(d) / sd_d)
+
+  # Return list
+  list(
+    d = d,
+    d_ci_lb = d_ci_lb,
+    d_ci_ub = d_ci_ub,
+    d_sig = d_sig,
+    d_prevalence = d_prevalence,
+    sd_d = sd_d,
+    r_dd = r_dd,
+    x = x,
+    y = y,
+    r_xx = r_xx,
+    r_yy = r_yy,
+    r_xy = r_xy,
+    mu_x = mu_x,
+    mu_y = mu_y,
+    sigma_x = sigma_x,
+    sigma_y = sigma_y,
+    tails = tails,
+    ci = ci
+  )
+}
+
+
+#' Composite composite score
+#'
+#' @param x Vector of subtest scores
+#' @param R Subtest score correlation matrix
+#' @param mu_x Vector of subtest means
+#' @param sigma_x Vector of subtest standard deviations
+#' @param mu_composite Composite mean
+#' @param sigma_composite Composite standard deviation
+#'
+#' @return composite score
+#' @export
+#'
+#' @examples
+#' # Subtest scores
+#' x <- c(12, 14)
+#' R <- matrix(c(1,.6, .6, 1), nrow = 2)
+#' composite_score(x = x,
+#'                 R = R,
+#'                 mu_x = 10,
+#'                sigma_x = 3)
+composite_score <- function(x, R,
+                            mu_x = 100,
+                            sigma_x = 15,
+                            mu_composite = 100,
+                            sigma_composite = 15) {
+  k <- length(x)
+  if (length(mu_x) == 1) mu_x <- rep(mu_x, k)
+  if (length(mu_x) != length(x)) stop("x and mu_x must be the same length.")
+  if (length(sigma_x) == 1) sigma_x <- rep(sigma_x, k)
+  if (length(sigma_x) != length(x)) stop("x and mu_x must be the same length.")
+  if ((nrow(R) != k) | (ncol(R) != k) | !is.matrix(R)) stop("R must a square matrix with the same size as x.")
+  if (length(mu_composite) != 1) stop("mu_composite must be a vector of length 1.")
+  if (length(sigma_composite) != 1) stop("sigma_composite must be a vector of length 1.")
+
+  sigma_composite * (sum(x - mu_x) / sqrt(sum(diag(sigma_x) %*% R %*% diag(sigma_x)))) + mu_composite
+}
 
 
 

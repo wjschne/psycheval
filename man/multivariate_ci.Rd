@@ -4,12 +4,12 @@
 \alias{multivariate_ci}
 \title{General a multivariate confidence interval for a set of scores}
 \usage{
-multivariate_ci(x, rxx, mu, sigma, ci = 0.95, v_names = names(x))
+multivariate_ci(x, r_xx, mu, sigma, ci = 0.95, v_names = names(x))
 }
 \arguments{
 \item{x}{a vector of scores}
 
-\item{rxx}{a vector reliability coefficients}
+\item{r_xx}{a vector reliability coefficients}
 
 \item{mu}{a vector means}
 
@@ -24,7 +24,7 @@ A data frame with the following columns:
 \itemize{
 \item \code{variable} - Variable names
 \item \code{x} - Variable scores
-\item \code{rxx} - Reliability coefficients
+\item \code{r_xx} - Reliability coefficients
 \item \code{mu_univariate} - Expected true score estimated from the corresponding observed score
 \item \code{see_univariate} - Standard error of the estimate computed from the corresponding reliability coefficient
 \item \code{mu_multivariate} - Expected true score estimated from all observed scores
@@ -40,7 +40,7 @@ General a multivariate confidence interval for a set of scores
 }
 \examples{
 # Observed Scores
-x_wisc <- c(
+x <- c(
   vci = 130,
   vsi = 130,
   fri = 70,
@@ -49,7 +49,7 @@ x_wisc <- c(
 )
 
 # Reliability Coefficients
-rxx_wisc <- c(
+r_xx <- c(
   vci = .92,
   vsi = .92,
   fri = .93,
@@ -58,7 +58,7 @@ rxx_wisc <- c(
   )
 
 # Correlation matrix
-R_wisc <- ("
+R <- ("
   index	vci 	vsi 	fri 	wmi 	psi
   vci  	1.00	0.59	0.59	0.53	0.30
   vsi  	0.59	1.00	0.62	0.50	0.36
@@ -70,21 +70,21 @@ R_wisc <- ("
     as.matrix()
 
  # Covariance matrix
- Sigma_wisc <- R_wisc * 15 ^ 2
+ sigma <- R * 15 ^ 2
 
  # Population means#'
- mu_wisc <- rep(100, 5)
+ mu <- rep(100, 5)
 
- mci_wisc <- multivariate_ci(
-   x = x_wisc,
-   rxx = rxx_wisc,
-   mu = mu_wisc,
-   sigma = Sigma_wisc
+ mci <- multivariate_ci(
+   x = x,
+   r_xx = r_xx,
+   mu = mu,
+   sigma = sigma
  )
 
- mci_wisc
+ mci
 
  # Conditional covariance of true score estimates
- attr(mci_wisc, "conditional_covariance")
+ attr(mci, "conditional_covariance")
 
 }
