@@ -147,6 +147,34 @@ composite_covariance(Sigma, w_expanded, correlation = T)
 #> [7,] 0.7006 0.7006 0.8563 0.8563 0.8563 0.7833 1.0000
 ```
 
+# Compute a composite score
+
+Suppose we have two subtest scores *A* = 12 and *B* = 14. Both scores
+are on the scaled score metric (*μ* = 10, *σ* = 3). We want to create a
+composite score on the standard score metric (*μ* = 100, *σ* = 15).
+
+The subtests *A* and *B* correlated at *ρ* = .6.
+
+``` r
+# Subtest scores
+x <- c(12, 14)
+
+# Subtest correlation
+rho <- 0.6
+
+# Subtest correlation matrix
+R <- matrix(c(1,rho, rho, 1), ncol = 2)
+
+# Compute composite score
+composite_score(x = x, 
+                R = R,
+                mu_x = 10,
+                sigma_x = 3,
+                mu_composite = 100,
+                sigma_composite = 15)
+#> [1] 116.8
+```
+
 # Compute a multivariate confidence interval conditioned on a set of observed scores
 
 ``` r
@@ -201,12 +229,12 @@ R_wisc
 
 d_ci <- multivariate_ci(
   x = x_wisc,
-  rxx = rxx_wisc,
+  r_xx = rxx_wisc,
   mu = rep(100, 5),
   sigma = R_wisc * 225)
 
 d_ci 
-#>     variable   x  rxx mu_univariate see_univariate mu_multivariate
+#>     variable   x r_xx mu_univariate see_univariate mu_multivariate
 #> vci      vci 130 0.92        127.60          4.069          127.88
 #> vsi      vsi 120 0.92        118.40          4.069          119.70
 #> fri      fri 123 0.93        121.39          3.827          122.33
@@ -226,7 +254,9 @@ d_ci
 #> psi              89.44
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+Compare the multivariate CI to the univariarte CI:
+
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 
 # Relative Proficiency Index
 

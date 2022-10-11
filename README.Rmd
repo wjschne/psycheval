@@ -112,6 +112,33 @@ composite_covariance(Sigma, w_expanded, correlation = T)
 ```
 
 
+# Compute a composite score
+
+Suppose we have two subtest scores *A* = 12 and *B* = 14. Both scores are on the scaled score metric (*&mu;* = 10, *&sigma;* = 3). We want to create a composite score on the standard score metric (*&mu;* = 100, *&sigma;* = 15).
+
+The subtests *A* and *B* correlated at *&rho;* = .6.
+
+```{r}
+# Subtest scores
+x <- c(12, 14)
+
+# Subtest correlation
+rho <- 0.6
+
+# Subtest correlation matrix
+R <- matrix(c(1,rho, rho, 1), ncol = 2)
+
+# Compute composite score
+composite_score(x = x, 
+                R = R,
+                mu_x = 10,
+                sigma_x = 3,
+                mu_composite = 100,
+                sigma_composite = 15)
+
+```
+
+
 # Compute a multivariate confidence interval conditioned on a set of observed scores
 
 
@@ -153,7 +180,7 @@ R_wisc
 
 d_ci <- multivariate_ci(
   x = x_wisc,
-  rxx = rxx_wisc,
+  r_xx = rxx_wisc,
   mu = rep(100, 5),
   sigma = R_wisc * 225)
 
@@ -161,10 +188,12 @@ d_ci
 
 ```
 
+Compare the multivariate CI to the univariarte CI:
+
 ```{r, echo = FALSE, fig.height=7}
 
 d_ci |> 
-  tidyr::pivot_longer(-variable:-rxx) |> 
+  tidyr::pivot_longer(-variable:-r_xx) |> 
   tidyr::separate(name, c("statistic", "type")) |> 
   tidyr::pivot_wider(names_from = statistic, values_from = value) |> 
   mutate(score = toupper(x) |> forcats::fct_inorder(),
