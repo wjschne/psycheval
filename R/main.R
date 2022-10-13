@@ -424,7 +424,7 @@ conditional_covariance <- function(x, sigma, mu = 0) {
 #' @param mu population mean of both x and y
 #' @param sigma population standard deviation of both x and y
 #' @param ci confidence interval of difference score
-#' @param tails for significance and prevalance of difference scores
+#' @param tails for significance and prevalence of difference scores
 #' @param mu_x population mean of x (defaults to mu)
 #' @param mu_y population mean of y (defaults to mu)
 #' @param sigma_x population standard deviation of x (defaults to sigma)
@@ -458,13 +458,13 @@ difference_score <- function(x,
   # Difference score
   d <- x - y
   # variance of difference score
-  var_d <- sigma_x ^ 2 + sigma_y ^ 2 - r_xy * sigma_x * sigma_y
+  var_d <- sigma_x ^ 2 + sigma_y ^ 2 - 2 * r_xy * sigma_x * sigma_y
   # sd of difference score
   sd_d <- sqrt(var_d)
   # variance of true difference score
-  var_d_true <- r_xx * sigma_x ^ 2 + r_yy * sigma_y ^ 2 - r_xy * sigma_x * sigma_y
+  var_d_true <- r_xx * sigma_x ^ 2 + r_yy * sigma_y ^ 2 - 2 * r_xy * sigma_x * sigma_y
 
-  # reliability of differenc score
+  # reliability of difference score
   r_dd <- var_d_true / var_d
 
   # z-score for confidence interval
@@ -477,7 +477,7 @@ difference_score <- function(x,
   # upper bound of confidence interval
   d_ci_ub <- d_true + z * sd_d * sqrt(r_dd * (1 - r_dd))
 
-  # standard deviatino of difference scores if true scores are equal
+  # standard deviation of difference scores if true scores are equal
   sd_d_if_true_scores_equal <- sqrt((sigma_x ^ 2) * (1 - r_xx) + (sigma_y ^ 2) * (1 - r_yy))
 
   # significance-value of difference score
