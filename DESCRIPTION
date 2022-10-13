@@ -18,6 +18,7 @@ BugReports: https://github.com/wjschne/psycheval/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Imports: 
+    lifecycle,
     stats,
     WJSmisc (>= 0.3)
 Suggests: 
