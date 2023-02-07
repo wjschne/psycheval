@@ -10,7 +10,8 @@ composite_score(
   mu_x = 100,
   sigma_x = 15,
   mu_composite = 100,
-  sigma_composite = 15
+  sigma_composite = 15,
+  w = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ composite_score(
 \item{mu_composite}{Composite mean}
 
 \item{sigma_composite}{Composite standard deviation}
+
+\item{w}{Vector of weights}
 }
 \value{
 composite score

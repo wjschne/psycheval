@@ -45,7 +45,7 @@ difference_score(
 
 \item{sigma_y}{population standard deviation of y (defaults to sigma)}
 
-\item{tails}{for significance and prevalance of difference scores}
+\item{tails}{for significance and prevalence of difference scores}
 }
 \value{
 list

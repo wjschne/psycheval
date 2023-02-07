@@ -518,6 +518,7 @@ difference_score <- function(x,
 #' @param sigma_x Vector of subtest standard deviations
 #' @param mu_composite Composite mean
 #' @param sigma_composite Composite standard deviation
+#' @param w Vector of weights
 #'
 #' @return composite score
 #' @export
@@ -530,11 +531,13 @@ difference_score <- function(x,
 #'                 R = R,
 #'                 mu_x = 10,
 #'                sigma_x = 3)
-composite_score <- function(x, R,
+composite_score <- function(x,
+                            R,
                             mu_x = 100,
                             sigma_x = 15,
                             mu_composite = 100,
-                            sigma_composite = 15) {
+                            sigma_composite = 15,
+                            w = NULL) {
   k <- length(x)
   if (length(mu_x) == 1) mu_x <- rep(mu_x, k)
   if (length(mu_x) != length(x)) stop("x and mu_x must be the same length.")
@@ -543,8 +546,10 @@ composite_score <- function(x, R,
   if ((nrow(R) != k) | (ncol(R) != k) | !is.matrix(R)) stop("R must a square matrix with the same size as x.")
   if (length(mu_composite) != 1) stop("mu_composite must be a vector of length 1.")
   if (length(sigma_composite) != 1) stop("sigma_composite must be a vector of length 1.")
+  if (is.null(w)) w <- rep(1, length(x))
+  if (length(w) != length(x)) stop("w must the the same length as x.")
 
-  sigma_composite * (sum(x - mu_x) / sqrt(sum(diag(sigma_x) %*% R %*% diag(sigma_x)))) + mu_composite
+  sigma_composite * (sum(w * (x - mu_x)) / sqrt(sum(diag(sigma_x * w) %*% R %*% diag(sigma_x * w)))) + mu_composite
 }
 
 

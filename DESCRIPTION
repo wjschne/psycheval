@@ -16,7 +16,7 @@ LazyData: true
 URL: https://github.com/wjschne/psycheval
 BugReports: https://github.com/wjschne/psycheval/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Imports: 
     lifecycle,
     stats,
@@ -30,4 +30,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Remotes: 
-    https://github.com/wjschne/WJSmisc
+    https://github.com/wjschne/psycheval

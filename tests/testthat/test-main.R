@@ -38,3 +38,26 @@ test_that("conditional_covariance", {
   expect_error(conditional_covariance(x, s, mu = c(x1 = 1, x3 = 2)), "The names in mu and the column names of sigma are not the same.")
   expect_error(conditional_covariance(x, s_singular), "The covariance matrix of the predictor variables is not positive definite.")
 })
+
+test_that("composite score", {
+  x <- c(1, 1)
+  R <- matrix(c(1,0, 0, 1), nrow = 2)
+  composite <- composite_score(x = x,
+                  R = R,
+                  mu_x = 0,
+                 sigma_x = 1,
+                 mu_composite = 0,
+                 sigma_composite = 1)
+  expect_equal(composite, sqrt(2))
+  composite2 <- composite_score(x = x,
+                               R = R,
+                               mu_x = 0,
+                               sigma_x = 1,
+                               mu_composite = 0,
+                               sigma_composite = 1,
+                               w = c(sqrt(3) / 2, .5))
+
+
+
+
+})
