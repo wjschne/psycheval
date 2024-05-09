@@ -554,3 +554,46 @@ composite_score <- function(x,
 
 
 
+#' Given a true score, what is the probability a true score is below a threshold?
+#'
+#' Assumes multivaraiate normality of true and observed scores
+#'
+#' @param x observed score
+#' @param threshold threshold score
+#' @param rxx reliability coefficient (must be between 0 and 1, exclusively)
+#' @param mu population mean (default = 100)
+#' @param sigma population standard deviation (default = 15)
+#'
+#' @return a probability
+#' @export
+#'
+#' @examples
+#' # What is the probability that a true score is 70 or less when
+#' # the observed score is 65, the reliability coefficient is .95,
+#' # the population mean is 100, and the population standard
+#' # deviation is 15?
+#' p_true_score_less_than_threshold(
+#'    x = 65,
+#'    threshold = 70,
+#'    rxx = .95,
+#'    mu = 100,
+#'    sigma = 15)
+p_true_score_less_than_threshold <- function(
+    x,
+    threshold,
+    rxx,
+    mu = 100,
+    sigma = 15) {
+  if (rxx >= 1 | rxx <= 0) stop("rxx must be between 0 and 1, exclusively.")
+  # Standard error of the estimate in the prediction of T
+  see <- sigma * sqrt(rxx - rxx ^ 2)
+  # Expected value of true score
+  T_hat = rxx * (x - mu) + mu
+  # probability true score is less than threshold
+  stats::pnorm((threshold - T_hat) / see)
+}
+
+
+
+
+

@@ -61,3 +61,12 @@ test_that("composite score", {
 
 
 })
+
+
+test_that("p_true_score_less_than_threshold", {
+  expect_error(p_true_score_less_than_threshold(0,1,0), regexp = "rxx must be between 0 and 1, exclusively.")
+  expect_length(p_true_score_less_than_threshold(c(1,0),1,.9, mu = 0, sigma = 1), 2)
+
+})
+
+p_true_score_less_than_threshold(0,1,.9, mu = 0, sigma = 1)

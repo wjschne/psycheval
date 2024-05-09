@@ -92,6 +92,8 @@ w
 #> [5,]    0    1
 ```
 
+# Composite covariance
+
 The covariance matrix of the sums is:
 
 ``` r
@@ -258,6 +260,12 @@ d_ci
 ```
 
 Compare the multivariate CI to the univariarte CI:
+
+    #> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    #> ℹ Please use `linewidth` instead.
+    #> This warning is displayed once every 8 hours.
+    #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    #> generated.
 
 <img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
 

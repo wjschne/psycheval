@@ -86,6 +86,8 @@ w[3:5,2] <- 1
 w
 ```
 
+# Composite covariance
+
 The covariance matrix of the sums is:
 
 ```{r}
