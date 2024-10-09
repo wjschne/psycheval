@@ -213,7 +213,7 @@ d_ci |>
   geom_point(aes(y = x), color = "gray20", size = 2.5) +
   geom_text(aes(y = x, label = x), color = "gray30", vjust = -1) +
   geom_pointrange(aes(ymin = lower, ymax = upper), position = position_dodge(0.8)) +
-  geom_vline(xintercept = 0:5 + .5, size = 0.25, color = "gray70") +
+  geom_vline(xintercept = 0:5 + .5, linewidth = 0.25, color = "gray70") +
   labs(x = NULL, color = "95%\nConfidence\nInterval") +
   theme_minimal(base_size = 16) + 
   theme(panel.grid.major.x = element_blank()) + 

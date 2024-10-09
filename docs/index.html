@@ -268,11 +268,6 @@
 <span><span class="co">#&gt; wmi             108.20</span></span>
 <span><span class="co">#&gt; psi              89.44</span></span></code></pre></div>
 <p>Compare the multivariate CI to the univariarte CI:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; ℹ Please use `linewidth` instead.</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; This warning is displayed once every 8 hours.</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt; generated.</span></span></code></pre></div>
 <div class="figure">
 <img src="reference/figures/README-fig-multivariateci-1.png" alt="Comparing Univariate and Multivariate Confidence Intervals" width="100%"><p class="caption">
 Multivariate Confidence Intervals
@@ -283,15 +278,15 @@ Multivariate Confidence Intervals
 <h1 id="relative-proficiency-index">Relative Proficiency Index<a class="anchor" aria-label="anchor" href="#relative-proficiency-index"></a>
 </h1>
 <p>When a typical same-age peer with an ability of W = 500 has a .90 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rpi.html">rpi</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">520</span>, mu <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 0.9878</span></span></code></pre></div>
 <p>Flipping the previous question, when a person with ability of W = 520 has a .90 probability of answering a question correctly, what is the probability that a typical same-age peer with an ability of W = 500 will answer the question correctly?</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rpi.html">rpi</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">520</span>, mu <span class="op">=</span> <span class="fl">500</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 0.5</span></span></code></pre></div>
 <p>Criteria other than .9 proficiency are also possible. For example, when a typical same-age peer with an ability of W = 500 has a .25 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/rpi.html">rpi</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">520</span>, mu <span class="op">=</span> <span class="fl">500</span>, criterion <span class="op">=</span> <span class="fl">.25</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 0.75</span></span></code></pre></div>
 </div>

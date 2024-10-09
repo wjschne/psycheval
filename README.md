@@ -261,12 +261,6 @@ d_ci
 
 Compare the multivariate CI to the univariarte CI:
 
-    #> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-    #> ℹ Please use `linewidth` instead.
-    #> This warning is displayed once every 8 hours.
-    #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    #> generated.
-
 <div class="figure">
 
 <img src="man/figures/README-fig-multivariateci-1.png" alt="Comparing Univariate and Multivariate Confidence Intervals" width="100%" />
