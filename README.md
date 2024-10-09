@@ -267,7 +267,15 @@ Compare the multivariate CI to the univariarte CI:
     #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
     #> generated.
 
-<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+<div class="figure">
+
+<img src="man/figures/README-fig-multivariateci-1.png" alt="Comparing Univariate and Multivariate Confidence Intervals" width="100%" />
+<p class="caption">
+
+Multivariate Confidence Intervals
+</p>
+
+</div>
 
 # Relative Proficiency Index
 

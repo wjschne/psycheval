@@ -38,6 +38,7 @@ remotes::install_github("wjschne/psycheval")
 Suppose you have a scaled score of 12 (*&mu;* = 10, *&sigma;* = 3) that you want to convert to a standard score (*&mu;* = 100, *&sigma;* = 15).
 
 ```{r}
+#| label: standardscore
 library(psycheval)
 x2standard(12, mu_x = 10, sigma_x = 3)
 ```
@@ -45,6 +46,7 @@ x2standard(12, mu_x = 10, sigma_x = 3)
 To convert to a z-score (*&mu;* = 0, *&sigma;* = 1):
 
 ```{r}
+#| label: x2standard
 x2standard(12,
            mu_x = 10, sigma_x = 3,
            mu_new = 0, sigma_new = 1)
@@ -54,6 +56,7 @@ x2standard(12,
 To convert to T-score (*&mu;* = 50, *&sigma;* = 10):
 
 ```{r}
+#| label: x2t
 x2standard(12,
            mu_x = 10, sigma_x = 3,
            mu_new = 50, sigma_new = 10)
@@ -64,13 +67,11 @@ x2standard(12,
 Let's create a covariance matrix of 5 variables that all correlate at .60.
 
 ```{r}
+#| label: covariancematrix
 # Create covariance matrix
 Sigma <- matrix(0.6, nrow = 5, ncol = 5)
 diag(Sigma) <- 1
 Sigma
-
-
-
 
 ```
 
@@ -79,6 +80,7 @@ Suppose we want to create a sum of the first 2 variables and a sum of the remain
 First we create a weight matrix `w` with 5 rows and 2 columns consisting entirely of zeros. The first column represents the weight for the first variable. We put ones in the first two rows of the first column and ones in rows 3--5 in the second column. 
 
 ```{r}
+#| label: wmatrix
 # Create weight matrix
 w <- matrix(0, nrow = 5, ncol = 2)
 w[1:2,1] <- 1
@@ -91,6 +93,7 @@ w
 The covariance matrix of the sums is:
 
 ```{r}
+#| label: compostecov
 # covariance matrix of weighted sums
 composite_covariance(Sigma, w)
 ```
@@ -98,6 +101,7 @@ composite_covariance(Sigma, w)
 To include the original variables in the covariance matrix, append an identity matrix to `w`:
 
 ```{r}
+#| label: expandedw
 # A 5 by 5 idendity matrix
 I <- diag(5)
 I
@@ -122,6 +126,7 @@ Suppose we have two subtest scores *A* = 12 and *B* = 14. Both scores are on the
 The subtests *A* and *B* correlated at *&rho;* = .6.
 
 ```{r}
+#| label: compositescore
 # Subtest scores
 x <- c(12, 14)
 
@@ -146,6 +151,7 @@ composite_score(x = x,
 
 
 ```{r}
+#| label: multivariateci
 library(readr)
 library(ggplot2)
 library(dplyr)
@@ -194,7 +200,9 @@ d_ci
 Compare the multivariate CI to the univariarte CI:
 
 ```{r, echo = FALSE, fig.height=7}
-
+#| label: fig-multivariateci
+#| fig-cap: Multivariate Confidence Intervals
+#| fig-alt: Comparing Univariate and Multivariate Confidence Intervals
 d_ci |> 
   tidyr::pivot_longer(-variable:-r_xx) |> 
   tidyr::separate(name, c("statistic", "type")) |> 
@@ -221,6 +229,7 @@ d_ci |>
 When a typical same-age peer with an ability of W = 500 has a .90 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?
 
 ```{r}
+#| label: rpi
 rpi(x = 520, mu = 500)
 ```
 
@@ -228,6 +237,7 @@ rpi(x = 520, mu = 500)
 Flipping the previous question, when a person with ability of W = 520 has a .90 probability of answering a question correctly, what is the probability that a typical same-age peer with an ability of W = 500 will answer the question correctly?
 
 ```{r}
+#| label: rpireverse
 rpi(x = 520, mu = 500, reverse = TRUE)
 ```
 
@@ -235,5 +245,6 @@ rpi(x = 520, mu = 500, reverse = TRUE)
 Criteria other than .9 proficiency are also possible. For example, when a typical same-age peer with an ability of W = 500 has a .25 probability of answering a question correctly, what is the probability that a person with ability of W = 520 will answer the question correctly?
 
 ```{r}
+#| label: grpi
 rpi(x = 520, mu = 500, criterion = .25)
 ```

@@ -1,54 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/composite_covariance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/composite_score.html</loc>
-  </url>
-  <url>
-    <loc>/reference/conditional_covariance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/difference_score.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/logit2w.html</loc>
-  </url>
-  <url>
-    <loc>/reference/multivariate_ci.html</loc>
-  </url>
-  <url>
-    <loc>/reference/psycheval-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/p_true_score_less_than_threshold.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rpi.html</loc>
-  </url>
-  <url>
-    <loc>/reference/w2logit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/w2p.html</loc>
-  </url>
-  <url>
-    <loc>/reference/w2rpi.html</loc>
-  </url>
-  <url>
-    <loc>/reference/x2standard.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://github.com/wjschne/psycheval/404.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/authors.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/index.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/composite_covariance.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/composite_score.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/conditional_covariance.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/difference_score.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/index.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/logit2w.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/multivariate_ci.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/psycheval-package.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/p_true_score_less_than_threshold.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/rpi.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/w2logit.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/w2p.html</loc></url>
+<url><loc>https://github.com/wjschne/psycheval/reference/x2standard.html</loc></url>
 </urlset>
+
