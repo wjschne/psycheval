@@ -12,6 +12,7 @@ Functions useful in psychological evaluations This package accompanies [*Individ
 Useful links:
 \itemize{
   \item \url{https://github.com/wjschne/psycheval}
+  \item \url{https://wjschne.github.io/psycheval/}
   \item Report bugs at \url{https://github.com/wjschne/psycheval/issues}
 }
 

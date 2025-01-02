@@ -22,6 +22,7 @@ list of conditional means and a covariance matrix
 \item \code{x} - The predictor scores from the x parameter
 \item \code{sigma} - The unconditional covariance matrix from the sigma parameter
 \item \code{mu} - Anamed vector of unconditional means
+\item \code{beta} - Regression Coefficients for finding mu_conditional
 }
 }
 \description{
