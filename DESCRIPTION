@@ -13,7 +13,7 @@ Description: Functions useful in psychological evaluations
 License: CC0
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/wjschne/psycheval
+URL: https://github.com/wjschne/psycheval, https://wjschne.github.io/psycheval/
 BugReports: https://github.com/wjschne/psycheval/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
