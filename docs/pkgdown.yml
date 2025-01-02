@@ -1,8 +1,0 @@
-pandoc: '3.2'
-pkgdown: 2.1.1
-pkgdown_sha: ~
-articles: {}
-last_built: 2025-01-02T13:46Z
-urls:
-  reference: https://wjschne.github.io/psycheval/reference
-  article: https://wjschne.github.io/psycheval/articles
