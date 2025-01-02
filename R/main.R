@@ -333,6 +333,7 @@ print.rpi <- function(x, ...) {
 #'   \item `x` - The predictor scores from the x parameter
 #'   \item `sigma` - The unconditional covariance matrix from the sigma parameter
 #'   \item `mu` - Anamed vector of unconditional means
+#'   \item `beta` - Regression Coefficients for finding mu_conditional
 #' }
 #' @export
 #'
@@ -395,9 +396,10 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   sigma_y <- sigma[y_names, y_names]
   sigma_xy <- sigma[x_names, y_names]
   sigma_yx <- sigma[y_names, x_names]
-  mu_y.x <- mu_y + (sigma_yx %*% invsigma_x %*% (x - mu_x))[,1, drop = TRUE]
+  beta <- sigma_yx %*% invsigma_x
+  mu_y.x <- mu_y + (beta %*% (x - mu_x))[,1, drop = TRUE]
 
-  sigma_y.x <- sigma_y - sigma_yx %*% invsigma_x %*% sigma_xy
+  sigma_y.x <- sigma_y - beta %*% sigma_xy
 
   l <- list(mu_conditional = mu_y.x,
        sigma_conditional = sigma_y.x,
@@ -407,7 +409,8 @@ conditional_covariance <- function(x, sigma, mu = 0) {
          sigma_conditional = sqrt(diag(sigma_y.x, names = TRUE))),
        x = x,
        sigma = sigma,
-       mu = mu)
+       mu = mu,
+       beta = beta)
   l
 }
 
