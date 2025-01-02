@@ -20,7 +20,7 @@ RoxygenNote: 7.3.2
 Imports: 
     lifecycle,
     stats,
-    WJSmisc (>= 0.3)
+    scales
 Suggests: 
     readr,
     tibble,

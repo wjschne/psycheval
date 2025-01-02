@@ -276,18 +276,18 @@ format.rpi <- function(x, ...) {
     if (attr(x, "reverse")) {
       paste0(
         "When this person has a ",
-        WJSmisc::prob_label(attr(x, "criterion"), digits = 2),
+        scales::number(attr(x, "criterion"), digits = 2),
         " probability of answering an item correctly, a same-age peer of average ability has a ",
-        WJSmisc::prob_label(x, digits = 2),
+        scales::number(x, digits = 2),
         " probability of answering it correctly."
       )
 
     } else {
       paste0(
         "When a same-age peer of average ability has a ",
-        WJSmisc::prob_label(attr(x, "criterion"), digits = 2),
+        scales::number(attr(x, "criterion"), digits = 2),
         " probability of answering an item correctly, this person has a ",
-        WJSmisc::prob_label(x, digits = 2),
+        scales::number(x, digits = 2),
         " probability of answering it correctly."
       )
 
