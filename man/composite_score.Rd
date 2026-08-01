@@ -38,9 +38,11 @@ Compute composite score
 \examples{
 # Subtest scores
 x <- c(12, 14)
-R <- matrix(c(1,.6, .6, 1), nrow = 2)
-composite_score(x = x,
-                R = R,
-                mu_x = 10,
-               sigma_x = 3)
+R <- matrix(c(1, .6, .6, 1), nrow = 2)
+composite_score(
+  x = x,
+  R = R,
+  mu_x = 10,
+  sigma_x = 3
+)
 }

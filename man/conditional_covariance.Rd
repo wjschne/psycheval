@@ -36,13 +36,19 @@ x <- c(A = 1)
 mu <- c(A = 0, B = 0, C = 0)
 
 # Unconditional covariance matrix with row and column names
-sigma <- matrix(c(1, .5, .5,
-                  .5, 1, .5,
-                  .5, .5, 1),
-                nrow = 3,
-                ncol = 3,
-                dimnames = list(names(mu),
-                                names(mu)))
+sigma <- matrix(
+  c(
+    1, .5, .5,
+    .5, 1, .5,
+    .5, .5, 1
+  ),
+  nrow = 3,
+  ncol = 3,
+  dimnames = list(
+    names(mu),
+    names(mu)
+  )
+)
 
 # Conditoinal means and covariance matrix
 conditional_covariance(x = x, sigma = sigma, mu = mu)

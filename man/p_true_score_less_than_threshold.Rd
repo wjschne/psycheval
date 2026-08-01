@@ -29,9 +29,10 @@ Assumes multivaraiate normality of true and observed scores
 # the population mean is 100, and the population standard
 # deviation is 15?
 p_true_score_less_than_threshold(
-   x = 65,
-   threshold = 70,
-   rxx = .95,
-   mu = 100,
-   sigma = 15)
+  x = 65,
+  threshold = 70,
+  rxx = .95,
+  mu = 100,
+  sigma = 15
+)
 }

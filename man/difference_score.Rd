@@ -61,5 +61,6 @@ difference_score(
   r_yy = .92,
   r_xy = .65,
   mu = 100,
-  sigma = 15)
+  sigma = 15
+)
 }

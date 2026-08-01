@@ -19,7 +19,7 @@ textbook.
 You can install the development version of psycheval like so:
 
 ``` r
-remotes::install_github("wjschne/psycheval")
+install.packages("psycheval", repos = c('https://wjschne.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 # Convert a variable to standard scores
@@ -224,6 +224,17 @@ R_wisc <- ("
     index = col_character())) |> 
   tibble::column_to_rownames("index") |>
   as.matrix()
+#> Warning: The `file` argument of `read_tsv()` should use `I()` for literal data as of
+#> readr 2.2.0.
+#>   
+#>   # Bad (for example):
+#>   read_csv("x,y\n1,2")
+#>   
+#>   # Good:
+#>   read_csv(I("x,y\n1,2"))
+#> This warning is displayed once per session.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+#> generated.
 R_wisc
 #>      vci  vsi  fri  wmi  psi
 #> vci 1.00 0.59 0.59 0.53 0.30

@@ -18,7 +18,7 @@ Computes covariances of composite scores given a covariance matrix and a weight 
 }
 \examples{
 # Create variable names
-v_names <- c(paste0("A_", 1:3),paste0("B_", 1:3))
+v_names <- c(paste0("A_", 1:3), paste0("B_", 1:3))
 v_composites <- c("A", "B")
 
 # Create covariance matrix
@@ -27,8 +27,8 @@ diag(Sigma) <- 1
 
 # Create weight matrix
 w <- matrix(0, nrow = 6, ncol = 2, dimnames = list(v_names, v_composites))
-w[v_names[1:3],"A"] <- 1
-w[v_names[4:6],"B"] <- 1
+w[v_names[1:3], "A"] <- 1
+w[v_names[4:6], "B"] <- 1
 w
 # covariance matrix of weighted sums
 composite_covariance(Sigma, w)

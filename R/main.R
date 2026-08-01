@@ -17,8 +17,11 @@ x2standard <- function(x,
                        sigma_x = stats::sd(x, na.rm = T),
                        mu_new = 100,
                        sigma_new = 15,
-                       digits = ifelse(sigma_new == 1, 2, 0)) {
+                       digits = ifelse(sigma_new == 1, 2, 0),
+                       rxx = .95,
+                       ci_level = .95) {
   round(sigma_new * (x - mu_x) / sigma_x + mu_new, digits)
+  standard_score(sigma_new * (x - mu_x) / sigma_x + mu_new, mu = mu_new, sigma = sigma_new, rxx = rxx, ci_level = ci_level, accuracy = 10^(digits * -1))
 }
 
 #' Computes covariances of composite scores given a covariance matrix and a weight matrix
@@ -29,7 +32,7 @@ x2standard <- function(x,
 #' @param correlation If TRUE, return correlations instead of covariances
 #' @examples
 #' # Create variable names
-#' v_names <- c(paste0("A_", 1:3),paste0("B_", 1:3))
+#' v_names <- c(paste0("A_", 1:3), paste0("B_", 1:3))
 #' v_composites <- c("A", "B")
 #'
 #' # Create covariance matrix
@@ -38,12 +41,12 @@ x2standard <- function(x,
 #'
 #' # Create weight matrix
 #' w <- matrix(0, nrow = 6, ncol = 2, dimnames = list(v_names, v_composites))
-#' w[v_names[1:3],"A"] <- 1
-#' w[v_names[4:6],"B"] <- 1
+#' w[v_names[1:3], "A"] <- 1
+#' w[v_names[4:6], "B"] <- 1
 #' w
 #' # covariance matrix of weighted sums
 #' composite_covariance(Sigma, w)
-composite_covariance <- function(Sigma,w, correlation = FALSE) {
+composite_covariance <- function(Sigma, w, correlation = FALSE) {
   Sigma_composite <- t(w) %*% Sigma %*% w
   if (correlation) stats::cov2cor(Sigma_composite) else Sigma_composite
 }
@@ -90,7 +93,7 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #'   fri = .93,
 #'   wmi = .92,
 #'   psi = .88
-#'   )
+#' )
 #'
 #' # Correlation matrix
 #' R <- ("
@@ -100,38 +103,44 @@ composite_covariance <- function(Sigma,w, correlation = FALSE) {
 #'   fri  	0.59	0.62	1.00	0.53	0.31
 #'   wmi  	0.53	0.50	0.53	1.00	0.36
 #'   psi  	0.30	0.36	0.31	0.36	1.00") |>
-#'     readr::read_tsv() |>
-#'     tibble::column_to_rownames("index") |>
-#'     as.matrix()
+#'   readr::read_tsv() |>
+#'   tibble::column_to_rownames("index") |>
+#'   as.matrix()
 #'
-#'  # Covariance matrix
-#'  sigma <- R * 15 ^ 2
+#' # Covariance matrix
+#' sigma <- R * 15^2
 #'
-#'  # Population means#'
-#'  mu <- rep(100, 5)
+#' # Population means#'
+#' mu <- rep(100, 5)
 #'
-#'  mci <- multivariate_ci(
-#'    x = x,
-#'    r_xx = r_xx,
-#'    mu = mu,
-#'    sigma = sigma
-#'  )
+#' mci <- multivariate_ci(
+#'   x = x,
+#'   r_xx = r_xx,
+#'   mu = mu,
+#'   sigma = sigma
+#' )
 #'
-#'  mci
+#' mci
 #'
-#'  # Conditional covariance of true score estimates
-#'  attr(mci, "conditional_covariance")
+#' # Conditional covariance of true score estimates
+#' attr(mci, "conditional_covariance")
 #'
 multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
   v_observed <- paste0(v_names, "_observed")
   v_true <- paste0(v_names, "_true")
   v_all <- c(v_true, v_observed)
-  sigma_true <- `diag<-`(sigma , r_xx * diag(sigma))
-  sigma_all <- `dimnames<-`(rbind(cbind(sigma_true, sigma_true),
-                                  cbind(sigma_true, sigma)),
-                            list(v_all,
-                                 v_all))
-  mu_univariate = r_xx * (x - mu) + mu
+  sigma_true <- `diag<-`(sigma, r_xx * diag(sigma))
+  sigma_all <- `dimnames<-`(
+    rbind(
+      cbind(sigma_true, sigma_true),
+      cbind(sigma_true, sigma)
+    ),
+    list(
+      v_all,
+      v_all
+    )
+  )
+  mu_univariate <- r_xx * (x - mu) + mu
 
   lower_p <- (1 - ci) / 2
   upper_p <- 1 - lower_p
@@ -139,7 +148,7 @@ multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
   mu_conditional <- mu + sigma_true %*% solve(sigma) %*% (x - mu)
   sigma_conditional <-
     sigma_true - sigma_true %*% solve(sigma) %*% t(sigma_true)
-  see_univariate <- sqrt(diag(sigma) * (r_xx - r_xx ^ 2))
+  see_univariate <- sqrt(diag(sigma) * (r_xx - r_xx^2))
   see_multivariate <- sqrt(diag(sigma_conditional))
 
   d <- data.frame(
@@ -159,8 +168,6 @@ multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
   attr(d, "conditional_covariance") <- sigma_conditional
 
   return(d)
-
-
 }
 
 
@@ -176,7 +183,7 @@ multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
 #' @examples
 #' w2p(w = 520, refw = 500)
 w2p <- function(w = 500, refw = 500) {
-  (1 + exp(-(w - refw) / (20 / log(9)))) ^ -1
+  (1 + exp(-(w - refw) / (20 / log(9))))^-1
 }
 
 
@@ -246,10 +253,9 @@ rpi <- function(x,
                 interpretation = FALSE) {
   if (criterion >= 1 | criterion <= 0) stop("criterion must be between 0 and 1, exclusive")
   if (reverse) {
-    r <- (1 + exp(log((1 - criterion) / criterion) + (x - mu) / scale )) ^ -1
-
+    r <- (1 + exp(log((1 - criterion) / criterion) + (x - mu) / scale))^-1
   } else {
-    r <- (1 + exp(-(log(criterion / (1 - criterion)) + (x - mu) / scale))) ^ -1
+    r <- (1 + exp(-(log(criterion / (1 - criterion)) + (x - mu) / scale)))^-1
   }
 
   class(r) <- c("rpi", class(r))
@@ -258,7 +264,6 @@ rpi <- function(x,
   attr(r, "interpretation") <- interpretation
   attr(r, "scale") <- scale
   r
-
 }
 
 #' Format rpi class
@@ -271,7 +276,6 @@ rpi <- function(x,
 #' @keywords internal
 #' @export
 format.rpi <- function(x, ...) {
-
   if (attr(x, "interpretation")) {
     if (attr(x, "reverse")) {
       paste0(
@@ -281,7 +285,6 @@ format.rpi <- function(x, ...) {
         scales::number(x, digits = 2),
         " probability of answering it correctly."
       )
-
     } else {
       paste0(
         "When a same-age peer of average ability has a ",
@@ -290,11 +293,10 @@ format.rpi <- function(x, ...) {
         scales::number(x, digits = 2),
         " probability of answering it correctly."
       )
-
     }
-
-
-  } else x
+  } else {
+    x
+  }
 }
 
 #' Print object of class rpi
@@ -308,7 +310,7 @@ format.rpi <- function(x, ...) {
 #' @export
 print.rpi <- function(x, ...) {
   cat(format(x, ...))
-  }
+}
 
 
 
@@ -345,13 +347,19 @@ print.rpi <- function(x, ...) {
 #' mu <- c(A = 0, B = 0, C = 0)
 #'
 #' # Unconditional covariance matrix with row and column names
-#' sigma <- matrix(c(1, .5, .5,
-#'                   .5, 1, .5,
-#'                   .5, .5, 1),
-#'                 nrow = 3,
-#'                 ncol = 3,
-#'                 dimnames = list(names(mu),
-#'                                 names(mu)))
+#' sigma <- matrix(
+#'   c(
+#'     1, .5, .5,
+#'     .5, 1, .5,
+#'     .5, .5, 1
+#'   ),
+#'   nrow = 3,
+#'   ncol = 3,
+#'   dimnames = list(
+#'     names(mu),
+#'     names(mu)
+#'   )
+#' )
 #'
 #' # Conditoinal means and covariance matrix
 #' conditional_covariance(x = x, sigma = sigma, mu = mu)
@@ -375,13 +383,13 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   if (length(setdiff(x_names, v_names)) > 0) stop(paste0("The following variables in x are not in sigma: ", setdiff(x_names, v_names)))
 
   if (length(mu) == 1) {
-    mu = rep(mu, length(v_names))
+    mu <- rep(mu, length(v_names))
     names(mu) <- v_names
   } else if (is.null(names(mu))) {
     if (ncol(sigma) != length(mu)) stop("mu and the columns of sigma are of different length.")
     names(mu) <- v_names
   } else if (!setequal(v_names, names(mu))) {
-     stop("The names in mu and the column names of sigma are not the same.")
+    stop("The names in mu and the column names of sigma are not the same.")
   } else if (is.null(names(mu))) {
     names(mu) <- x_names
   }
@@ -397,20 +405,23 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   sigma_xy <- sigma[x_names, y_names]
   sigma_yx <- sigma[y_names, x_names]
   beta <- sigma_yx %*% invsigma_x
-  mu_y.x <- mu_y + (beta %*% (x - mu_x))[,1, drop = TRUE]
+  mu_y.x <- mu_y + (beta %*% (x - mu_x))[, 1, drop = TRUE]
 
   sigma_y.x <- sigma_y - beta %*% sigma_xy
 
-  l <- list(mu_conditional = mu_y.x,
-       sigma_conditional = sigma_y.x,
-       descriptives_conditional = data.frame(
-         construct = names(mu_y.x),
-         mu_conditional = mu_y.x,
-         sigma_conditional = sqrt(diag(sigma_y.x, names = TRUE))),
-       x = x,
-       sigma = sigma,
-       mu = mu,
-       beta = beta)
+  l <- list(
+    mu_conditional = mu_y.x,
+    sigma_conditional = sigma_y.x,
+    descriptives_conditional = data.frame(
+      construct = names(mu_y.x),
+      mu_conditional = mu_y.x,
+      sigma_conditional = sqrt(diag(sigma_y.x, names = TRUE))
+    ),
+    x = x,
+    sigma = sigma,
+    mu = mu,
+    beta = beta
+  )
   l
 }
 
@@ -443,7 +454,8 @@ conditional_covariance <- function(x, sigma, mu = 0) {
 #'   r_yy = .92,
 #'   r_xy = .65,
 #'   mu = 100,
-#'   sigma = 15)
+#'   sigma = 15
+#' )
 difference_score <- function(x,
                              y,
                              r_xx = .90,
@@ -457,15 +469,14 @@ difference_score <- function(x,
                              sigma_x = sigma,
                              sigma_y = sigma,
                              tails = 2) {
-
   # Difference score
   d <- x - y
   # variance of difference score
-  var_d <- sigma_x ^ 2 + sigma_y ^ 2 - 2 * r_xy * sigma_x * sigma_y
+  var_d <- sigma_x^2 + sigma_y^2 - 2 * r_xy * sigma_x * sigma_y
   # sd of difference score
   sd_d <- sqrt(var_d)
   # variance of true difference score
-  var_d_true <- r_xx * sigma_x ^ 2 + r_yy * sigma_y ^ 2 - 2 * r_xy * sigma_x * sigma_y
+  var_d_true <- r_xx * sigma_x^2 + r_yy * sigma_y^2 - 2 * r_xy * sigma_x * sigma_y
 
   # reliability of difference score
   r_dd <- var_d_true / var_d
@@ -481,7 +492,7 @@ difference_score <- function(x,
   d_ci_ub <- d_true + z * sd_d * sqrt(r_dd * (1 - r_dd))
 
   # standard deviation of difference scores if true scores are equal
-  sd_d_if_true_scores_equal <- sqrt((sigma_x ^ 2) * (1 - r_xx) + (sigma_y ^ 2) * (1 - r_yy))
+  sd_d_if_true_scores_equal <- sqrt((sigma_x^2) * (1 - r_xx) + (sigma_y^2) * (1 - r_yy))
 
   # significance-value of difference score
   d_sig <- tails * stats::pnorm(-1 * abs(d) / sd_d_if_true_scores_equal)
@@ -529,11 +540,13 @@ difference_score <- function(x,
 #' @examples
 #' # Subtest scores
 #' x <- c(12, 14)
-#' R <- matrix(c(1,.6, .6, 1), nrow = 2)
-#' composite_score(x = x,
-#'                 R = R,
-#'                 mu_x = 10,
-#'                sigma_x = 3)
+#' R <- matrix(c(1, .6, .6, 1), nrow = 2)
+#' composite_score(
+#'   x = x,
+#'   R = R,
+#'   mu_x = 10,
+#'   sigma_x = 3
+#' )
 composite_score <- function(x,
                             R,
                             mu_x = 100,
@@ -576,11 +589,12 @@ composite_score <- function(x,
 #' # the population mean is 100, and the population standard
 #' # deviation is 15?
 #' p_true_score_less_than_threshold(
-#'    x = 65,
-#'    threshold = 70,
-#'    rxx = .95,
-#'    mu = 100,
-#'    sigma = 15)
+#'   x = 65,
+#'   threshold = 70,
+#'   rxx = .95,
+#'   mu = 100,
+#'   sigma = 15
+#' )
 p_true_score_less_than_threshold <- function(
     x,
     threshold,
@@ -589,14 +603,114 @@ p_true_score_less_than_threshold <- function(
     sigma = 15) {
   if (rxx >= 1 | rxx <= 0) stop("rxx must be between 0 and 1, exclusively.")
   # Standard error of the estimate in the prediction of T
-  see <- sigma * sqrt(rxx - rxx ^ 2)
+  see <- sigma * sqrt(rxx - rxx^2)
   # Expected value of true score
-  T_hat = rxx * (x - mu) + mu
+  T_hat <- rxx * (x - mu) + mu
   # probability true score is less than threshold
   stats::pnorm((threshold - T_hat) / see)
 }
 
+# standard scores ----
+#' create standard scores
+#'
+#' computes confidence intervals, percentiles
+#' @param .data obtained score
+#' @param mu population mean
+#' @param sigma population standard deviation
+#' @param rxx reliability coefficient
+#' @param ci_level confidence level
+#' @param accuracy rounding accuracy
+#' @slot estimated_true_score estimated true score
+#' @slot standard_error_of_measurement standard error of measurement
+#' @slot standard_error_of_estimation standard error of estimation
+#' @slot margin_of_error margin of error
+#' @slot z z-score associated with `ci_level`
+#' @slot ci_lower_bound lower bound of CI
+#' @slot ci_upper_bound upper bound of CI
+#' @slot ci CI as a range
+#' @slot percentile percentile
+#' @export
+#' @examples
+#' x <- standard_score(140, rxx = .97)
+#' x@ci
+#' x@percentile
+#' x@estimated_true_score
+standard_score <- S7::new_class("standard_score", parent = class_double, package = "psycheval", properties = list(
+  mu = new_property(class = class_numeric, default = 100L),
+  sigma = new_property(class = class_numeric, default = 15),
+  rxx = new_property(class = class_numeric, default = .9),
+  ci_level = new_property(class = class_numeric, default = .95),
+  estimated_true_score = new_property(getter = function(self) {
+    (c(self) - self@mu) * self@rxx + self@mu
+  }),
+  standard_error_of_measurement = new_property(getter = function(self) {
+    self@sigma * sqrt(1 - self@rxx)
+  }),
+  standard_error_of_estimation = new_property(getter = function(self) {
+    self@standard_error_of_measurement * sqrt(self@rxx)
+  }),
+  z = new_property(getter = function(self) {
+    stats::qnorm(.5 + self@ci_level / 2)
+  }),
+  margin_of_error = new_property(getter = function(self) {
+    self@z * self@standard_error_of_estimation
+  }),
+  ci_lower_bound = new_property(getter = function(self) {
+    self@estimated_true_score - self@margin_of_error
+  }),
+  accuracy = new_property(class_double, default = 1),
+  ci_upper_bound = new_property(getter = function(self) {
+    self@estimated_true_score + self@margin_of_error
+  }),
+  ci = new_property(getter = function(self) {
+    paste0(
+      scales::number(self@ci_lower_bound, accuracy = self@accuracy),
+      "\u2014",
+      scales::number(self@ci_upper_bound, accuracy = self@accuracy)
+    )
+  }),
+  percentile = new_property(getter = function(self) {
+    WJSmisc::proportion2percentile(pnorm(c(self), self@mu, self@sigma))
+  })
+))
 
+#' Estimated stability coefficient for IQ
+#'
+#' Uses best fitting model of general ability from Table 3 from Breit, M., Scherrer, V., Tucker-Drob, E. M., & Preckel, F. (2024). The stability of cognitive abilities: A meta-analytic review of longitudinal studies. Psychological Bulletin. https://doi.org/10.1037/bul0000425
 
-
-
+#' @param age age at initial testing
+#' @param interval year between tests
+#' @param different_battery_family different battery family (e.g., WAIS and Stanford-Binet). Defaults to `FALSE`, meaning either the same test or test from the same battery family (e.g., WISC and WAIS))
+#' @param b0 Horizontal asymptote
+#' @param b1 Age scaling factor
+#' @param b2 Age growth rate
+#' @param b3 Interval-age interaction
+#' @param b4 Interval scaling factor
+#' @param b5 Interval growth rate
+#' @param b6 Different battery family effect
+#'
+#' @returns a correlation stability coefficient
+#' @export
+#'
+#' @examples
+#' estimated_stability(
+#'   age = 12,
+#'   interval = 6,
+#'   different_battery_family = TRUE
+#' )
+estimated_stability <- function(
+    age,
+    interval,
+    different_battery_family = FALSE,
+    b0 = .716,
+    b1 = .003,
+    b2 = -.258,
+    b3 = 0,
+    b4 = -.095,
+    b5 = -.138,
+    b6 = -.104) {
+  age <- age - 20
+  interval <- interval - 5
+  different_battery_family <- 1 * different_battery_family
+  b0 - b1 * exp(b2 * age + b3 * age * interval) - b4 * exp(b5 * interval) + b6 * different_battery_family
+}

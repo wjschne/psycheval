@@ -55,7 +55,7 @@ r_xx <- c(
   fri = .93,
   wmi = .92,
   psi = .88
-  )
+)
 
 # Correlation matrix
 R <- ("
@@ -65,26 +65,26 @@ R <- ("
   fri  	0.59	0.62	1.00	0.53	0.31
   wmi  	0.53	0.50	0.53	1.00	0.36
   psi  	0.30	0.36	0.31	0.36	1.00") |>
-    readr::read_tsv() |>
-    tibble::column_to_rownames("index") |>
-    as.matrix()
+  readr::read_tsv() |>
+  tibble::column_to_rownames("index") |>
+  as.matrix()
 
- # Covariance matrix
- sigma <- R * 15 ^ 2
+# Covariance matrix
+sigma <- R * 15^2
 
- # Population means#'
- mu <- rep(100, 5)
+# Population means#'
+mu <- rep(100, 5)
 
- mci <- multivariate_ci(
-   x = x,
-   r_xx = r_xx,
-   mu = mu,
-   sigma = sigma
- )
+mci <- multivariate_ci(
+  x = x,
+  r_xx = r_xx,
+  mu = mu,
+  sigma = sigma
+)
 
- mci
+mci
 
- # Conditional covariance of true score estimates
- attr(mci, "conditional_covariance")
+# Conditional covariance of true score estimates
+attr(mci, "conditional_covariance")
 
 }
