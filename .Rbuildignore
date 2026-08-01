@@ -6,3 +6,4 @@
 ^README\.Rmd$
 mytable.R
 ^\.github$
+^\.claude$
