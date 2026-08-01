@@ -12,16 +12,25 @@
 #' @examples
 #' x2standard(13, mu_x = 10, sigma_x = 3)
 #'
-x2standard <- function(x,
-                       mu_x = mean(x, na.rm = T),
-                       sigma_x = stats::sd(x, na.rm = T),
-                       mu_new = 100,
-                       sigma_new = 15,
-                       digits = ifelse(sigma_new == 1, 2, 0),
-                       rxx = .95,
-                       ci_level = .95) {
+x2standard <- function(
+  x,
+  mu_x = mean(x, na.rm = T),
+  sigma_x = stats::sd(x, na.rm = T),
+  mu_new = 100,
+  sigma_new = 15,
+  digits = ifelse(sigma_new == 1, 2, 0),
+  rxx = .95,
+  ci_level = .95
+) {
   round(sigma_new * (x - mu_x) / sigma_x + mu_new, digits)
-  standard_score(sigma_new * (x - mu_x) / sigma_x + mu_new, mu = mu_new, sigma = sigma_new, rxx = rxx, ci_level = ci_level, accuracy = 10^(digits * -1))
+  standard_score(
+    sigma_new * (x - mu_x) / sigma_x + mu_new,
+    mu = mu_new,
+    sigma = sigma_new,
+    rxx = rxx,
+    ci_level = ci_level,
+    accuracy = 10^(digits * -1)
+  )
 }
 
 #' Computes covariances of composite scores given a covariance matrix and a weight matrix
@@ -103,6 +112,7 @@ composite_covariance <- function(Sigma, w, correlation = FALSE) {
 #'   fri  	0.59	0.62	1.00	0.53	0.31
 #'   wmi  	0.53	0.50	0.53	1.00	0.36
 #'   psi  	0.30	0.36	0.31	0.36	1.00") |>
+#'   I() |>
 #'   readr::read_tsv() |>
 #'   tibble::column_to_rownames("index") |>
 #'   as.matrix()
@@ -161,7 +171,11 @@ multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
     see_multivariate = see_multivariate,
     upper_univariate = stats::qnorm(upper_p, mu_univariate, see_univariate),
     lower_univariate = stats::qnorm(lower_p, mu_univariate, see_univariate),
-    upper_multivariate = stats::qnorm(upper_p, mu_conditional, see_multivariate),
+    upper_multivariate = stats::qnorm(
+      upper_p,
+      mu_conditional,
+      see_multivariate
+    ),
     lower_multivariate = stats::qnorm(lower_p, mu_conditional, see_multivariate)
   )
 
@@ -169,7 +183,6 @@ multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
 
   return(d)
 }
-
 
 
 #' Convert W scores to a probabilities
@@ -201,7 +214,6 @@ w2p <- function(w = 500, refw = 500) {
 logit2w <- function(logit, refw = 500) {
   logit * 20 / log(9) + refw
 }
-
 
 
 #' Convert W scores to logits
@@ -245,13 +257,17 @@ w2logit <- function(w, refw = 500) {
 #' # passing an item, what is the probability that a person with a W
 #' # score of 500 will pass it?
 #' rpi(x = 540, mu = 500, criterion = .9, reverse = TRUE, interpretation = TRUE)
-rpi <- function(x,
-                mu = 500,
-                scale = 20 / log(9),
-                criterion = .9,
-                reverse = FALSE,
-                interpretation = FALSE) {
-  if (criterion >= 1 | criterion <= 0) stop("criterion must be between 0 and 1, exclusive")
+rpi <- function(
+  x,
+  mu = 500,
+  scale = 20 / log(9),
+  criterion = .9,
+  reverse = FALSE,
+  interpretation = FALSE
+) {
+  if (criterion >= 1 | criterion <= 0) {
+    stop("criterion must be between 0 and 1, exclusive")
+  }
   if (reverse) {
     r <- (1 + exp(log((1 - criterion) / criterion) + (x - mu) / scale))^-1
   } else {
@@ -313,14 +329,6 @@ print.rpi <- function(x, ...) {
 }
 
 
-
-
-
-
-
-
-
-
 #' Conditional Covariance
 #'
 #' @param x named numeric vector of predictor scores
@@ -365,12 +373,24 @@ print.rpi <- function(x, ...) {
 #' conditional_covariance(x = x, sigma = sigma, mu = mu)
 #'
 conditional_covariance <- function(x, sigma, mu = 0) {
-  if (!("matrix" %in% class(sigma))) stop("sigma must be a matrix.")
-  if (is.null(names(x))) stop("x must be a named vector.")
-  if (is.null(colnames(sigma))) stop("sigma must have column names.")
-  if (is.null(rownames(sigma))) stop("sigma must have row names.")
-  if (!all(rownames(sigma) == colnames(sigma))) stop("The row and column names for sigma must be identical.")
-  if (!isSymmetric(sigma)) stop("sigma must be a symmetric square matrix.")
+  if (!("matrix" %in% class(sigma))) {
+    stop("sigma must be a matrix.")
+  }
+  if (is.null(names(x))) {
+    stop("x must be a named vector.")
+  }
+  if (is.null(colnames(sigma))) {
+    stop("sigma must have column names.")
+  }
+  if (is.null(rownames(sigma))) {
+    stop("sigma must have row names.")
+  }
+  if (!all(rownames(sigma) == colnames(sigma))) {
+    stop("The row and column names for sigma must be identical.")
+  }
+  if (!isSymmetric(sigma)) {
+    stop("sigma must be a symmetric square matrix.")
+  }
 
   v_names <- colnames(sigma)
   x_names <- names(x)
@@ -378,15 +398,24 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   x_missing <- x_names[is.na(x)]
   x_names <- setdiff(x_names, x_missing)
 
-  if (length(y_names) == 0) stop("There are no variables in sigma that are not in x.")
+  if (length(y_names) == 0) {
+    stop("There are no variables in sigma that are not in x.")
+  }
 
-  if (length(setdiff(x_names, v_names)) > 0) stop(paste0("The following variables in x are not in sigma: ", setdiff(x_names, v_names)))
+  if (length(setdiff(x_names, v_names)) > 0) {
+    stop(paste0(
+      "The following variables in x are not in sigma: ",
+      setdiff(x_names, v_names)
+    ))
+  }
 
   if (length(mu) == 1) {
     mu <- rep(mu, length(v_names))
     names(mu) <- v_names
   } else if (is.null(names(mu))) {
-    if (ncol(sigma) != length(mu)) stop("mu and the columns of sigma are of different length.")
+    if (ncol(sigma) != length(mu)) {
+      stop("mu and the columns of sigma are of different length.")
+    }
     names(mu) <- v_names
   } else if (!setequal(v_names, names(mu))) {
     stop("The names in mu and the column names of sigma are not the same.")
@@ -394,9 +423,12 @@ conditional_covariance <- function(x, sigma, mu = 0) {
     names(mu) <- x_names
   }
 
-
   sigma_x <- sigma[x_names, x_names]
-  if (!all(eigen(sigma_x)$values > 0)) stop("The covariance matrix of the predictor variables is not positive definite.")
+  if (!all(eigen(sigma_x)$values > 0)) {
+    stop(
+      "The covariance matrix of the predictor variables is not positive definite."
+    )
+  }
   invsigma_x <- solve(sigma_x)
 
   mu_y <- mu[y_names]
@@ -424,8 +456,6 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   )
   l
 }
-
-
 
 
 #' Difference score statistics
@@ -456,19 +486,21 @@ conditional_covariance <- function(x, sigma, mu = 0) {
 #'   mu = 100,
 #'   sigma = 15
 #' )
-difference_score <- function(x,
-                             y,
-                             r_xx = .90,
-                             r_yy = .90,
-                             r_xy = 0,
-                             mu = 100,
-                             sigma = 15,
-                             ci = .95,
-                             mu_x = mu,
-                             mu_y = mu,
-                             sigma_x = sigma,
-                             sigma_y = sigma,
-                             tails = 2) {
+difference_score <- function(
+  x,
+  y,
+  r_xx = .90,
+  r_yy = .90,
+  r_xy = 0,
+  mu = 100,
+  sigma = 15,
+  ci = .95,
+  mu_x = mu,
+  mu_y = mu,
+  sigma_x = sigma,
+  sigma_y = sigma,
+  tails = 2
+) {
   # Difference score
   d <- x - y
   # variance of difference score
@@ -476,7 +508,10 @@ difference_score <- function(x,
   # sd of difference score
   sd_d <- sqrt(var_d)
   # variance of true difference score
-  var_d_true <- r_xx * sigma_x^2 + r_yy * sigma_y^2 - 2 * r_xy * sigma_x * sigma_y
+  var_d_true <- r_xx *
+    sigma_x^2 +
+    r_yy * sigma_y^2 -
+    2 * r_xy * sigma_x * sigma_y
 
   # reliability of difference score
   r_dd <- var_d_true / var_d
@@ -492,7 +527,9 @@ difference_score <- function(x,
   d_ci_ub <- d_true + z * sd_d * sqrt(r_dd * (1 - r_dd))
 
   # standard deviation of difference scores if true scores are equal
-  sd_d_if_true_scores_equal <- sqrt((sigma_x^2) * (1 - r_xx) + (sigma_y^2) * (1 - r_yy))
+  sd_d_if_true_scores_equal <- sqrt(
+    (sigma_x^2) * (1 - r_xx) + (sigma_y^2) * (1 - r_yy)
+  )
 
   # significance-value of difference score
   d_sig <- tails * stats::pnorm(-1 * abs(d) / sd_d_if_true_scores_equal)
@@ -547,27 +584,49 @@ difference_score <- function(x,
 #'   mu_x = 10,
 #'   sigma_x = 3
 #' )
-composite_score <- function(x,
-                            R,
-                            mu_x = 100,
-                            sigma_x = 15,
-                            mu_composite = 100,
-                            sigma_composite = 15,
-                            w = NULL) {
+composite_score <- function(
+  x,
+  R,
+  mu_x = 100,
+  sigma_x = 15,
+  mu_composite = 100,
+  sigma_composite = 15,
+  w = NULL
+) {
   k <- length(x)
-  if (length(mu_x) == 1) mu_x <- rep(mu_x, k)
-  if (length(mu_x) != length(x)) stop("x and mu_x must be the same length.")
-  if (length(sigma_x) == 1) sigma_x <- rep(sigma_x, k)
-  if (length(sigma_x) != length(x)) stop("x and mu_x must be the same length.")
-  if ((nrow(R) != k) | (ncol(R) != k) | !is.matrix(R)) stop("R must a square matrix with the same size as x.")
-  if (length(mu_composite) != 1) stop("mu_composite must be a vector of length 1.")
-  if (length(sigma_composite) != 1) stop("sigma_composite must be a vector of length 1.")
-  if (is.null(w)) w <- rep(1, length(x))
-  if (length(w) != length(x)) stop("w must the the same length as x.")
+  if (length(mu_x) == 1) {
+    mu_x <- rep(mu_x, k)
+  }
+  if (length(mu_x) != length(x)) {
+    stop("x and mu_x must be the same length.")
+  }
+  if (length(sigma_x) == 1) {
+    sigma_x <- rep(sigma_x, k)
+  }
+  if (length(sigma_x) != length(x)) {
+    stop("x and mu_x must be the same length.")
+  }
+  if ((nrow(R) != k) | (ncol(R) != k) | !is.matrix(R)) {
+    stop("R must a square matrix with the same size as x.")
+  }
+  if (length(mu_composite) != 1) {
+    stop("mu_composite must be a vector of length 1.")
+  }
+  if (length(sigma_composite) != 1) {
+    stop("sigma_composite must be a vector of length 1.")
+  }
+  if (is.null(w)) {
+    w <- rep(1, length(x))
+  }
+  if (length(w) != length(x)) {
+    stop("w must the the same length as x.")
+  }
 
-  sigma_composite * (sum(w * (x - mu_x)) / sqrt(sum(diag(sigma_x * w) %*% R %*% diag(sigma_x * w)))) + mu_composite
+  sigma_composite *
+    (sum(w * (x - mu_x)) /
+      sqrt(sum(diag(sigma_x * w) %*% R %*% diag(sigma_x * w)))) +
+    mu_composite
 }
-
 
 
 #' Given a true score, what is the probability a true score is below a threshold?
@@ -596,12 +655,15 @@ composite_score <- function(x,
 #'   sigma = 15
 #' )
 p_true_score_less_than_threshold <- function(
-    x,
-    threshold,
-    rxx,
-    mu = 100,
-    sigma = 15) {
-  if (rxx >= 1 | rxx <= 0) stop("rxx must be between 0 and 1, exclusively.")
+  x,
+  threshold,
+  rxx,
+  mu = 100,
+  sigma = 15
+) {
+  if (rxx >= 1 | rxx <= 0) {
+    stop("rxx must be between 0 and 1, exclusively.")
+  }
   # Standard error of the estimate in the prediction of T
   see <- sigma * sqrt(rxx - rxx^2)
   # Expected value of true score
@@ -635,44 +697,49 @@ p_true_score_less_than_threshold <- function(
 #' x@ci
 #' x@percentile
 #' x@estimated_true_score
-standard_score <- S7::new_class("standard_score", parent = class_double, package = "psycheval", properties = list(
-  mu = new_property(class = class_numeric, default = 100L),
-  sigma = new_property(class = class_numeric, default = 15),
-  rxx = new_property(class = class_numeric, default = .9),
-  ci_level = new_property(class = class_numeric, default = .95),
-  estimated_true_score = new_property(getter = function(self) {
-    (c(self) - self@mu) * self@rxx + self@mu
-  }),
-  standard_error_of_measurement = new_property(getter = function(self) {
-    self@sigma * sqrt(1 - self@rxx)
-  }),
-  standard_error_of_estimation = new_property(getter = function(self) {
-    self@standard_error_of_measurement * sqrt(self@rxx)
-  }),
-  z = new_property(getter = function(self) {
-    stats::qnorm(.5 + self@ci_level / 2)
-  }),
-  margin_of_error = new_property(getter = function(self) {
-    self@z * self@standard_error_of_estimation
-  }),
-  ci_lower_bound = new_property(getter = function(self) {
-    self@estimated_true_score - self@margin_of_error
-  }),
-  accuracy = new_property(class_double, default = 1),
-  ci_upper_bound = new_property(getter = function(self) {
-    self@estimated_true_score + self@margin_of_error
-  }),
-  ci = new_property(getter = function(self) {
-    paste0(
-      scales::number(self@ci_lower_bound, accuracy = self@accuracy),
-      "\u2014",
-      scales::number(self@ci_upper_bound, accuracy = self@accuracy)
-    )
-  }),
-  percentile = new_property(getter = function(self) {
-    WJSmisc::proportion2percentile(pnorm(c(self), self@mu, self@sigma))
-  })
-))
+standard_score <- S7::new_class(
+  "standard_score",
+  parent = class_double,
+  package = "psycheval",
+  properties = list(
+    mu = new_property(class = class_numeric, default = 100L),
+    sigma = new_property(class = class_numeric, default = 15),
+    rxx = new_property(class = class_numeric, default = .9),
+    ci_level = new_property(class = class_numeric, default = .95),
+    estimated_true_score = new_property(getter = function(self) {
+      (c(self) - self@mu) * self@rxx + self@mu
+    }),
+    standard_error_of_measurement = new_property(getter = function(self) {
+      self@sigma * sqrt(1 - self@rxx)
+    }),
+    standard_error_of_estimation = new_property(getter = function(self) {
+      self@standard_error_of_measurement * sqrt(self@rxx)
+    }),
+    z = new_property(getter = function(self) {
+      stats::qnorm(.5 + self@ci_level / 2)
+    }),
+    margin_of_error = new_property(getter = function(self) {
+      self@z * self@standard_error_of_estimation
+    }),
+    ci_lower_bound = new_property(getter = function(self) {
+      self@estimated_true_score - self@margin_of_error
+    }),
+    accuracy = new_property(class_double, default = 1),
+    ci_upper_bound = new_property(getter = function(self) {
+      self@estimated_true_score + self@margin_of_error
+    }),
+    ci = new_property(getter = function(self) {
+      paste0(
+        scales::number(self@ci_lower_bound, accuracy = self@accuracy),
+        "\u2014",
+        scales::number(self@ci_upper_bound, accuracy = self@accuracy)
+      )
+    }),
+    percentile = new_property(getter = function(self) {
+      WJSmisc::proportion2percentile(pnorm(c(self), self@mu, self@sigma))
+    })
+  )
+)
 
 #' Estimated stability coefficient for IQ
 #'
@@ -699,18 +766,22 @@ standard_score <- S7::new_class("standard_score", parent = class_double, package
 #'   different_battery_family = TRUE
 #' )
 estimated_stability <- function(
-    age,
-    interval,
-    different_battery_family = FALSE,
-    b0 = .716,
-    b1 = .003,
-    b2 = -.258,
-    b3 = 0,
-    b4 = -.095,
-    b5 = -.138,
-    b6 = -.104) {
+  age,
+  interval,
+  different_battery_family = FALSE,
+  b0 = .716,
+  b1 = .003,
+  b2 = -.258,
+  b3 = 0,
+  b4 = -.095,
+  b5 = -.138,
+  b6 = -.104
+) {
   age <- age - 20
   interval <- interval - 5
   different_battery_family <- 1 * different_battery_family
-  b0 - b1 * exp(b2 * age + b3 * age * interval) - b4 * exp(b5 * interval) + b6 * different_battery_family
+  b0 -
+    b1 * exp(b2 * age + b3 * age * interval) -
+    b4 * exp(b5 * interval) +
+    b6 * different_battery_family
 }
