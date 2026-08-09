@@ -48,8 +48,9 @@ To convert to a z-score (*&mu;* = 0, *&sigma;* = 1):
 ```{r}
 #| label: x2standard
 x2standard(12,
-           mu_x = 10, sigma_x = 3,
-           mu_new = 0, sigma_new = 1)
+  mu_x = 10, sigma_x = 3,
+  mu_new = 0, sigma_new = 1
+)
 ```
 
 
@@ -58,8 +59,9 @@ To convert to T-score (*&mu;* = 50, *&sigma;* = 10):
 ```{r}
 #| label: x2t
 x2standard(12,
-           mu_x = 10, sigma_x = 3,
-           mu_new = 50, sigma_new = 10)
+  mu_x = 10, sigma_x = 3,
+  mu_new = 50, sigma_new = 10
+)
 ```
 
 # Covariance of weighted sums
@@ -72,7 +74,6 @@ Let's create a covariance matrix of 5 variables that all correlate at .60.
 Sigma <- matrix(0.6, nrow = 5, ncol = 5)
 diag(Sigma) <- 1
 Sigma
-
 ```
 
 Suppose we want to create a sum of the first 2 variables and a sum of the remaining three variables. What would the covariance matrix of the summary variables be?
@@ -83,8 +84,8 @@ First we create a weight matrix `w` with 5 rows and 2 columns consisting entirel
 #| label: wmatrix
 # Create weight matrix
 w <- matrix(0, nrow = 5, ncol = 2)
-w[1:2,1] <- 1
-w[3:5,2] <- 1
+w[1:2, 1] <- 1
+w[3:5, 2] <- 1
 w
 ```
 
@@ -134,16 +135,17 @@ x <- c(12, 14)
 rho <- 0.6
 
 # Subtest correlation matrix
-R <- matrix(c(1,rho, rho, 1), ncol = 2)
+R <- matrix(c(1, rho, rho, 1), ncol = 2)
 
 # Compute composite score
-composite_score(x = x, 
-                R = R,
-                mu_x = 10,
-                sigma_x = 3,
-                mu_composite = 100,
-                sigma_composite = 15)
-
+composite_score(
+  x = x,
+  R = R,
+  mu_x = 10,
+  sigma_x = 3,
+  mu_composite = 100,
+  sigma_composite = 15
+)
 ```
 
 
@@ -162,7 +164,8 @@ x_wisc <- c(
   vsi = 120,
   fri = 123,
   wmi = 116,
-  psi = 97)
+  psi = 97
+)
 
 # Reliability coefficients
 rxx_wisc <- c(
@@ -170,7 +173,8 @@ rxx_wisc <- c(
   vsi = .92,
   fri = .93,
   wmi = .92,
-  psi = .88)
+  psi = .88
+)
 
 # Correlation matrix
 R_wisc <- ("
@@ -179,10 +183,11 @@ R_wisc <- ("
   vsi  	0.59	1.00	0.62	0.50	0.36
   fri  	0.59	0.62	1.00	0.53	0.31
   wmi  	0.53	0.50	0.53	1.00	0.36
-  psi  	0.30	0.36	0.31	0.36	1.00") |> 
+  psi  	0.30	0.36	0.31	0.36	1.00") |>
   read_tsv(col_types = cols(
     .default = col_double(),
-    index = col_character())) |> 
+    index = col_character()
+  )) |>
   tibble::column_to_rownames("index") |>
   as.matrix()
 R_wisc
@@ -191,10 +196,10 @@ d_ci <- multivariate_ci(
   x = x_wisc,
   r_xx = rxx_wisc,
   mu = rep(100, 5),
-  sigma = R_wisc * 225)
+  sigma = R_wisc * 225
+)
 
-d_ci 
-
+d_ci
 ```
 
 Compare the multivariate CI to the univariarte CI:
@@ -203,24 +208,27 @@ Compare the multivariate CI to the univariarte CI:
 #| label: fig-multivariateci
 #| fig-cap: Multivariate Confidence Intervals
 #| fig-alt: Comparing Univariate and Multivariate Confidence Intervals
-d_ci |> 
-  tidyr::pivot_longer(-variable:-r_xx) |> 
-  tidyr::separate(name, c("statistic", "type")) |> 
-  tidyr::pivot_wider(names_from = statistic, values_from = value) |> 
-  mutate(score = toupper(x) |> forcats::fct_inorder(),
-         type = stringr::str_to_title(type) |> factor(levels = c("Univariate", "Multivariate"))) |> 
+d_ci |>
+  tidyr::pivot_longer(-variable:-r_xx) |>
+  tidyr::separate(name, c("statistic", "type")) |>
+  tidyr::pivot_wider(names_from = statistic, values_from = value) |>
+  mutate(
+    score = toupper(x) |> forcats::fct_inorder(),
+    type = stringr::str_to_title(type) |> factor(levels = c("Univariate", "Multivariate"))
+  ) |>
   ggplot(aes(score, mu, color = type)) +
   geom_point(aes(y = x), color = "gray20", size = 2.5) +
   geom_text(aes(y = x, label = x), color = "gray30", vjust = -1) +
   geom_pointrange(aes(ymin = lower, ymax = upper), position = position_dodge(0.8)) +
   geom_vline(xintercept = 0:5 + .5, linewidth = 0.25, color = "gray70") +
   labs(x = NULL, color = "95%\nConfidence\nInterval") +
-  theme_minimal(base_size = 16) + 
-  theme(panel.grid.major.x = element_blank()) + 
-  scale_y_continuous("Standard Scores", 
-                     breaks = seq(40, 160, 15), 
-                     minor_breaks = seq(40, 160, 5), 
-                     limits = c(40, 160))
+  theme_minimal(base_size = 16) +
+  theme(panel.grid.major.x = element_blank()) +
+  scale_y_continuous("Standard Scores",
+    breaks = seq(40, 160, 15),
+    minor_breaks = seq(40, 160, 5),
+    limits = c(40, 160)
+  )
 ```
 
 

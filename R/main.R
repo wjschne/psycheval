@@ -14,8 +14,8 @@
 #'
 x2standard <- function(
   x,
-  mu_x = mean(x, na.rm = T),
-  sigma_x = stats::sd(x, na.rm = T),
+  mu_x = mean(x, na.rm = TRUE),
+  sigma_x = stats::sd(x, na.rm = TRUE),
   mu_new = 100,
   sigma_new = 15,
   digits = ifelse(sigma_new == 1, 2, 0),
@@ -113,7 +113,7 @@ composite_covariance <- function(Sigma, w, correlation = FALSE) {
 #'   wmi  	0.53	0.50	0.53	1.00	0.36
 #'   psi  	0.30	0.36	0.31	0.36	1.00") |>
 #'   I() |>
-#'   readr::read_tsv() |>
+#'   readr::read_tsv(show_col_types = FALSE) |>
 #'   tibble::column_to_rownames("index") |>
 #'   as.matrix()
 #'
@@ -184,7 +184,6 @@ multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
   return(d)
 }
 
-
 #' Convert W scores to a probabilities
 #'
 #' @param w person ability in w-score units
@@ -198,7 +197,6 @@ multivariate_ci <- function(x, r_xx, mu, sigma, ci = .95, v_names = names(x)) {
 w2p <- function(w = 500, refw = 500) {
   (1 + exp(-(w - refw) / (20 / log(9))))^-1
 }
-
 
 #' Convert logits to W scores
 #'
@@ -215,7 +213,6 @@ logit2w <- function(logit, refw = 500) {
   logit * 20 / log(9) + refw
 }
 
-
 #' Convert W scores to logits
 #'
 #' @param w numeric vector of W scores
@@ -229,7 +226,6 @@ logit2w <- function(logit, refw = 500) {
 w2logit <- function(w, refw = 500) {
   log(9) * (w - refw) / 20
 }
-
 
 #' Convert ability (in W scores by default) to relative proficiency index
 #'
@@ -328,7 +324,6 @@ print.rpi <- function(x, ...) {
   cat(format(x, ...))
 }
 
-
 #' Conditional Covariance
 #'
 #' @param x named numeric vector of predictor scores
@@ -398,7 +393,7 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   x_missing <- x_names[is.na(x)]
   x_names <- setdiff(x_names, x_missing)
 
-  if (length(y_names) == 0) {
+  if (!length(y_names)) {
     stop("There are no variables in sigma that are not in x.")
   }
 
@@ -456,7 +451,6 @@ conditional_covariance <- function(x, sigma, mu = 0) {
   )
   l
 }
-
 
 #' Difference score statistics
 #'
@@ -560,7 +554,6 @@ difference_score <- function(
   )
 }
 
-
 #' Compute composite score
 #'
 #' @param x Vector of subtest scores
@@ -627,7 +620,6 @@ composite_score <- function(
       sqrt(sum(diag(sigma_x * w) %*% R %*% diag(sigma_x * w)))) +
     mu_composite
 }
-
 
 #' Given a true score, what is the probability a true score is below a threshold?
 #'
@@ -699,9 +691,7 @@ p_true_score_less_than_threshold <- function(
 #' x@estimated_true_score
 standard_score <- S7::new_class(
   "standard_score",
-  parent = class_double,
-  package = "psycheval",
-  properties = list(
+  properties <- list(
     mu = new_property(class = class_numeric, default = 100L),
     sigma = new_property(class = class_numeric, default = 15),
     rxx = new_property(class = class_numeric, default = .9),
