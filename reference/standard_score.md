@@ -83,10 +83,27 @@ standard_score(
 
 ``` r
 x <- standard_score(140, rxx = .97)
+x
+#> <psycheval::standard_score> num 140
+#>  @ mu                           : int 100
+#>  @ sigma                        : num 15
+#>  @ rxx                          : num 0.97
+#>  @ ci_level                     : num 0.95
+#>  @ estimated_true_score         : num 139
+#>  @ estimated_true_score_rescaled: num 139
+#>  @ standard_error_of_measurement: num 2.6
+#>  @ standard_error_of_estimation : num 2.56
+#>  @ z                            : num 1.96
+#>  @ margin_of_error              : num 5.02
+#>  @ ci_lower_bound               : num 134
+#>  @ accuracy                     : num 1
+#>  @ ci_upper_bound               : num 144
+#>  @ ci                           : chr "134—144"
+#>  @ percentile                   : chr ".996"
 x@ci
 #> [1] "134—144"
 x@percentile
-#> Error in loadNamespace(x): there is no package called ‘WJSmisc’
+#> [1] ".996"
 x@estimated_true_score
 #> [1] 138.8
 ```

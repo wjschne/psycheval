@@ -121,10 +121,27 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">standard_score</span><span class="op">(</span><span class="fl">140</span>, rxx <span class="op">=</span> <span class="fl">.97</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;psycheval::standard_score&gt; num 140</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ mu                           : int 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ sigma                        : num 15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ rxx                          : num 0.97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci_level                     : num 0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ estimated_true_score         : num 139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ estimated_true_score_rescaled: num 139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ standard_error_of_measurement: num 2.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ standard_error_of_estimation : num 2.56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ z                            : num 1.96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ margin_of_error              : num 5.02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci_lower_bound               : num 134</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ accuracy                     : num 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci_upper_bound               : num 144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci                           : chr "134—144"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ percentile                   : chr ".996"</span>
 <span class="r-in"><span><span class="va">x</span><span class="op">@</span><span class="va">ci</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "134—144"</span>
 <span class="r-in"><span><span class="va">x</span><span class="op">@</span><span class="va">percentile</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘WJSmisc’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] ".996"</span>
 <span class="r-in"><span><span class="va">x</span><span class="op">@</span><span class="va">estimated_true_score</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 138.8</span>
 </code></pre></div>

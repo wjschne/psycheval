@@ -93,25 +93,10 @@ R <- ("
   fri    0.59  0.62  1.00  0.53  0.31
   wmi    0.53  0.50  0.53  1.00  0.36
   psi    0.30  0.36  0.31  0.36  1.00") |>
-  readr::read_tsv() |>
+  I() |>
+  readr::read_tsv(show_col_types = FALSE) |>
   tibble::column_to_rownames("index") |>
   as.matrix()
-#> Warning: The `file` argument of `read_tsv()` should use `I()` for literal data as of
-#> readr 2.2.0.
-#>   
-#>   # Bad (for example):
-#>   read_csv("x,y\n1,2")
-#>   
-#>   # Good:
-#>   read_csv(I("x,y\n1,2"))
-#> Rows: 5 Columns: 6
-#> ── Column specification ────────────────────────────────────────────────────────
-#> Delimiter: "\t"
-#> chr (1): index
-#> dbl (5): vci, vsi, fri, wmi, psi
-#> 
-#> ℹ Use `spec()` to retrieve the full column specification for this data.
-#> ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 # Covariance matrix
 sigma <- R * 15^2

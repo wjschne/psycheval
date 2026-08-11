@@ -70,14 +70,16 @@
 <p>To convert to a z-score (<em>μ</em> = 0, <em>σ</em> = 1):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/x2standard.html">x2standard</a></span><span class="op">(</span><span class="fl">12</span>,</span>
-<span>           mu_x <span class="op">=</span> <span class="fl">10</span>, sigma_x <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>           mu_new <span class="op">=</span> <span class="fl">0</span>, sigma_new <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  mu_x <span class="op">=</span> <span class="fl">10</span>, sigma_x <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  mu_new <span class="op">=</span> <span class="fl">0</span>, sigma_new <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.67</span></span></code></pre></div>
 <p>To convert to T-score (<em>μ</em> = 50, <em>σ</em> = 10):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/x2standard.html">x2standard</a></span><span class="op">(</span><span class="fl">12</span>,</span>
-<span>           mu_x <span class="op">=</span> <span class="fl">10</span>, sigma_x <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>           mu_new <span class="op">=</span> <span class="fl">50</span>, sigma_new <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span>  mu_x <span class="op">=</span> <span class="fl">10</span>, sigma_x <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  mu_new <span class="op">=</span> <span class="fl">50</span>, sigma_new <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 57</span></span></code></pre></div>
 </div>
 <div class="section level1">
@@ -100,8 +102,8 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create weight matrix</span></span>
 <span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span>, nrow <span class="op">=</span> <span class="fl">5</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">w</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">w</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span>,<span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">w</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">w</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">w</span></span>
 <span><span class="co">#&gt;      [,1] [,2]</span></span>
 <span><span class="co">#&gt; [1,]    1    0</span></span>
@@ -178,15 +180,17 @@
 <span><span class="va">rho</span> <span class="op">&lt;-</span> <span class="fl">0.6</span></span>
 <span></span>
 <span><span class="co"># Subtest correlation matrix</span></span>
-<span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">rho</span>, <span class="va">rho</span>, <span class="fl">1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">rho</span>, <span class="va">rho</span>, <span class="fl">1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute composite score</span></span>
-<span><span class="fu"><a href="reference/composite_score.html">composite_score</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, </span>
-<span>                R <span class="op">=</span> <span class="va">R</span>,</span>
-<span>                mu_x <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>                sigma_x <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                mu_composite <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>                sigma_composite <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/composite_score.html">composite_score</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">x</span>,</span>
+<span>  R <span class="op">=</span> <span class="va">R</span>,</span>
+<span>  mu_x <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  sigma_x <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  mu_composite <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  sigma_composite <span class="op">=</span> <span class="fl">15</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 116.8</span></span></code></pre></div>
 </div>
 <div class="section level1">
@@ -211,7 +215,8 @@
 <span>  vsi <span class="op">=</span> <span class="fl">120</span>,</span>
 <span>  fri <span class="op">=</span> <span class="fl">123</span>,</span>
 <span>  wmi <span class="op">=</span> <span class="fl">116</span>,</span>
-<span>  psi <span class="op">=</span> <span class="fl">97</span><span class="op">)</span></span>
+<span>  psi <span class="op">=</span> <span class="fl">97</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Reliability coefficients</span></span>
 <span><span class="va">rxx_wisc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -219,7 +224,8 @@
 <span>  vsi <span class="op">=</span> <span class="fl">.92</span>,</span>
 <span>  fri <span class="op">=</span> <span class="fl">.93</span>,</span>
 <span>  wmi <span class="op">=</span> <span class="fl">.92</span>,</span>
-<span>  psi <span class="op">=</span> <span class="fl">.88</span><span class="op">)</span></span>
+<span>  psi <span class="op">=</span> <span class="fl">.88</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Correlation matrix</span></span>
 <span><span class="va">R_wisc</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="st">"</span></span>
@@ -228,10 +234,11 @@
 <span><span class="st">  vsi   0.59    1.00    0.62    0.50    0.36</span></span>
 <span><span class="st">  fri   0.59    0.62    1.00    0.53    0.31</span></span>
 <span><span class="st">  wmi   0.53    0.50    0.53    1.00    0.36</span></span>
-<span><span class="st">  psi   0.30    0.36    0.31    0.36    1.00"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="st">  psi   0.30    0.36    0.31    0.36    1.00"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_tsv</a></span><span class="op">(</span>col_types <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/cols.html" class="external-link">cols</a></span><span class="op">(</span></span>
 <span>    .default <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/parse_atomic.html" class="external-link">col_double</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    index <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/parse_atomic.html" class="external-link">col_character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    index <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/parse_atomic.html" class="external-link">col_character</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html" class="external-link">column_to_rownames</a></span><span class="op">(</span><span class="st">"index"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: The `file` argument of `read_tsv()` should use `I()` for literal data as of</span></span>
@@ -257,9 +264,10 @@
 <span>  x <span class="op">=</span> <span class="va">x_wisc</span>,</span>
 <span>  r_xx <span class="op">=</span> <span class="va">rxx_wisc</span>,</span>
 <span>  mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">5</span><span class="op">)</span>,</span>
-<span>  sigma <span class="op">=</span> <span class="va">R_wisc</span> <span class="op">*</span> <span class="fl">225</span><span class="op">)</span></span>
+<span>  sigma <span class="op">=</span> <span class="va">R_wisc</span> <span class="op">*</span> <span class="fl">225</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">d_ci</span> </span>
+<span><span class="va">d_ci</span></span>
 <span><span class="co">#&gt;     variable   x r_xx mu_univariate see_univariate mu_multivariate</span></span>
 <span><span class="co">#&gt; vci      vci 130 0.92        127.60          4.069          127.88</span></span>
 <span><span class="co">#&gt; vsi      vsi 120 0.92        118.40          4.069          119.70</span></span>

@@ -40,8 +40,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">x2standard</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  mu_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
-<span>  sigma_x <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>  mu_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  sigma_x <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  mu_new <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  sigma_new <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sigma_new</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">0</span><span class="op">)</span>,</span>
@@ -77,6 +77,14 @@
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
 <dd><p>rounding digits</p></dd>
 
+
+<dt id="arg-rxx">rxx<a class="anchor" aria-label="anchor" href="#arg-rxx"></a></dt>
+<dd><p>reliability coefficient</p></dd>
+
+
+<dt id="arg-ci-level">ci_level<a class="anchor" aria-label="anchor" href="#arg-ci-level"></a></dt>
+<dd><p>confidence interval percentage</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -87,7 +95,21 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">x2standard</span><span class="op">(</span><span class="fl">13</span>, mu_x <span class="op">=</span> <span class="fl">10</span>, sigma_x <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;psycheval::standard_score&gt; num 115</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘WJSmisc’</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ mu                           : num 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ sigma                        : num 15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ rxx                          : num 0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci_level                     : num 0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ estimated_true_score         : num 114</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ estimated_true_score_rescaled: num 115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ standard_error_of_measurement: num 3.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ standard_error_of_estimation : num 3.27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ z                            : num 1.96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ margin_of_error              : num 6.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci_lower_bound               : num 108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ accuracy                     : num 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci_upper_bound               : num 121</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ ci                           : chr "108—121"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ percentile                   : chr ".84"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

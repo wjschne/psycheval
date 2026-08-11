@@ -19,3 +19,8 @@ Useful links:
 
 **Maintainer**: W. Joel Schneider <w.joel.schneider@gmail.com>
 ([ORCID](https://orcid.org/0000-0002-8393-5316))
+
+Authors:
+
+- W. Joel Schneider <w.joel.schneider@gmail.com>
+  ([ORCID](https://orcid.org/0000-0002-8393-5316))

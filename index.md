@@ -31,8 +31,9 @@ To convert to a z-score (*μ* = 0, *σ* = 1):
 ``` r
 
 x2standard(12,
-           mu_x = 10, sigma_x = 3,
-           mu_new = 0, sigma_new = 1)
+  mu_x = 10, sigma_x = 3,
+  mu_new = 0, sigma_new = 1
+)
 #> [1] 0.67
 ```
 
@@ -41,8 +42,9 @@ To convert to T-score (*μ* = 50, *σ* = 10):
 ``` r
 
 x2standard(12,
-           mu_x = 10, sigma_x = 3,
-           mu_new = 50, sigma_new = 10)
+  mu_x = 10, sigma_x = 3,
+  mu_new = 50, sigma_new = 10
+)
 #> [1] 57
 ```
 
@@ -78,8 +80,8 @@ in rows 3–5 in the second column.
 
 # Create weight matrix
 w <- matrix(0, nrow = 5, ncol = 2)
-w[1:2,1] <- 1
-w[3:5,2] <- 1
+w[1:2, 1] <- 1
+w[3:5, 2] <- 1
 w
 #>      [,1] [,2]
 #> [1,]    1    0
@@ -168,15 +170,17 @@ x <- c(12, 14)
 rho <- 0.6
 
 # Subtest correlation matrix
-R <- matrix(c(1,rho, rho, 1), ncol = 2)
+R <- matrix(c(1, rho, rho, 1), ncol = 2)
 
 # Compute composite score
-composite_score(x = x, 
-                R = R,
-                mu_x = 10,
-                sigma_x = 3,
-                mu_composite = 100,
-                sigma_composite = 15)
+composite_score(
+  x = x,
+  R = R,
+  mu_x = 10,
+  sigma_x = 3,
+  mu_composite = 100,
+  sigma_composite = 15
+)
 #> [1] 116.8
 ```
 
@@ -202,7 +206,8 @@ x_wisc <- c(
   vsi = 120,
   fri = 123,
   wmi = 116,
-  psi = 97)
+  psi = 97
+)
 
 # Reliability coefficients
 rxx_wisc <- c(
@@ -210,7 +215,8 @@ rxx_wisc <- c(
   vsi = .92,
   fri = .93,
   wmi = .92,
-  psi = .88)
+  psi = .88
+)
 
 # Correlation matrix
 R_wisc <- ("
@@ -219,10 +225,11 @@ R_wisc <- ("
   vsi   0.59    1.00    0.62    0.50    0.36
   fri   0.59    0.62    1.00    0.53    0.31
   wmi   0.53    0.50    0.53    1.00    0.36
-  psi   0.30    0.36    0.31    0.36    1.00") |> 
+  psi   0.30    0.36    0.31    0.36    1.00") |>
   read_tsv(col_types = cols(
     .default = col_double(),
-    index = col_character())) |> 
+    index = col_character()
+  )) |>
   tibble::column_to_rownames("index") |>
   as.matrix()
 #> Warning: The `file` argument of `read_tsv()` should use `I()` for literal data as of
@@ -248,9 +255,10 @@ d_ci <- multivariate_ci(
   x = x_wisc,
   r_xx = rxx_wisc,
   mu = rep(100, 5),
-  sigma = R_wisc * 225)
+  sigma = R_wisc * 225
+)
 
-d_ci 
+d_ci
 #>     variable   x r_xx mu_univariate see_univariate mu_multivariate
 #> vci      vci 130 0.92        127.60          4.069          127.88
 #> vsi      vsi 120 0.92        118.40          4.069          119.70
