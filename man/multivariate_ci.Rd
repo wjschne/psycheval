@@ -65,7 +65,8 @@ R <- ("
   fri  	0.59	0.62	1.00	0.53	0.31
   wmi  	0.53	0.50	0.53	1.00	0.36
   psi  	0.30	0.36	0.31	0.36	1.00") |>
-  readr::read_tsv() |>
+  I() |>
+  readr::read_tsv(show_col_types = FALSE) |>
   tibble::column_to_rownames("index") |>
   as.matrix()
 

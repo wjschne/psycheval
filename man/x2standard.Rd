@@ -6,8 +6,8 @@
 \usage{
 x2standard(
   x,
-  mu_x = mean(x, na.rm = T),
-  sigma_x = stats::sd(x, na.rm = T),
+  mu_x = mean(x, na.rm = TRUE),
+  sigma_x = stats::sd(x, na.rm = TRUE),
   mu_new = 100,
   sigma_new = 15,
   digits = ifelse(sigma_new == 1, 2, 0),
@@ -27,6 +27,10 @@ x2standard(
 \item{sigma_new}{standard deviation of new scores}
 
 \item{digits}{rounding digits}
+
+\item{rxx}{reliability coefficient}
+
+\item{ci_level}{confidence interval percentage}
 }
 \value{
 numeric vector

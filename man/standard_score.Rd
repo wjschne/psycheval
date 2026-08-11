@@ -53,6 +53,7 @@ computes confidence intervals, percentiles
 
 \examples{
 x <- standard_score(140, rxx = .97)
+x
 x@ci
 x@percentile
 x@estimated_true_score

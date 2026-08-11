@@ -2,7 +2,7 @@ library(psycheval)
 library(testthat)
 
 test_that("x2standard", {
-  expect_equal(x2standard(x = 1, mu_x = 0, sigma_x = 1), 115)
+  expect_equal(c(x2standard(x = 1, mu_x = 0, sigma_x = 1)), 115)
 })
 
 test_that("conditional_covariance", {

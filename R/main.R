@@ -6,6 +6,8 @@
 #' @param mu_new mean of new scores
 #' @param sigma_new standard deviation of new scores
 #' @param digits rounding digits
+#' @param rxx reliability coefficient
+#' @param ci_level confidence interval percentage
 #'
 #' @return numeric vector
 #' @export
@@ -686,11 +688,14 @@ p_true_score_less_than_threshold <- function(
 #' @export
 #' @examples
 #' x <- standard_score(140, rxx = .97)
+#' x
 #' x@ci
 #' x@percentile
 #' x@estimated_true_score
 standard_score <- S7::new_class(
-  "standard_score",
+  parent = class_double,
+  name = "standard_score",
+  package = "psycheval",
   properties <- list(
     mu = new_property(class = class_numeric, default = 100L),
     sigma = new_property(class = class_numeric, default = 15),
@@ -698,6 +703,9 @@ standard_score <- S7::new_class(
     ci_level = new_property(class = class_numeric, default = .95),
     estimated_true_score = new_property(getter = function(self) {
       (c(self) - self@mu) * self@rxx + self@mu
+    }),
+    estimated_true_score_rescaled = new_property(getter = function(self) {
+      (c(self) - self@mu) * sqrt(self@rxx) + self@mu
     }),
     standard_error_of_measurement = new_property(getter = function(self) {
       self@sigma * sqrt(1 - self@rxx)
@@ -726,7 +734,28 @@ standard_score <- S7::new_class(
       )
     }),
     percentile = new_property(getter = function(self) {
-      WJSmisc::proportion2percentile(pnorm(c(self), self@mu, self@sigma))
+      p <- pnorm(c(self), self@mu, self@sigma)
+      p1 <- round(p, 2)
+      lower_limit <- 0.95 * 10^(-2)
+      upper_limit <- 1 - lower_limit
+      p1[p > upper_limit & p <= 1] <- 1 -
+        signif(
+          1 -
+            p[
+              p > upper_limit &
+                p <= 1
+            ],
+          1
+        )
+      p1[p < lower_limit & p >= 0] <- signif(
+        p[
+          p < lower_limit &
+            p >= 0
+        ],
+        1
+      )
+      stringr::str_remove(p1, "^0") |>
+        stringr::str_remove_all(" ")
     })
   )
 )
